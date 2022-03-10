@@ -27,9 +27,9 @@ class MyVector
 		/// Normal constructor
 		MyVector(size_t capacity = MyVector::DEFAULT_CAPACITY) {
 
-      size_ = 0;
-      capacity_ = MyVector::DEFAULT_CAPACITY;
-      T* elements_ = nullptr;
+		size_ = 0;
+		capacity_ = MyVector::DEFAULT_CAPACITY;
+		elements_ = new T[MyVector::DEFAULT_CAPACITY]();
 
       // TODO: Your code here
 		}
@@ -37,9 +37,9 @@ class MyVector
 		/// Copy constructor
 		MyVector(const MyVector& other) {
 
-      size_ = other.size_;
-      capacity_ = other._capacity;
-      elements_ = other.elements_;
+		size_ = other.size_;
+		capacity_ = other._capacity;
+		elements_ = new T[other.capacity_]();
 
 			// TODO: Your code here
 		}
@@ -51,8 +51,9 @@ class MyVector
 		 */
 		~MyVector() {
 
-      clear();
-      elements_ = nullptr;
+		clear();
+		delete [] elements_;
+    //elements_ = nullptr;
 			// TODO: Your code here
 		}
 
@@ -63,19 +64,22 @@ class MyVector
 		///	Assignment operator
 		MyVector& operator=(const MyVector& rhs) {
 
-        if (this != &rhs)
-    {
-      size_ = rhs.size_;
-      capacity_ = rhs.capacity_;
-      elements_   = rhs.elements_;
-    }
-    return *this;
+			if (this != &rhs)
+		{
+		// size_ = rhs.size_;
+		// capacity_ = rhs.capacity_;
+		// elements_  = new T[rhs.capacity_];
+    std::copy( rhs.elements_, rhs.elements_ + rhs.size_, elements_ );
+    size_ = rhs.size_;
+		}
+		return *this;
 			// TODO: Your code here
 		}
 
 		/// Operator overload to at()
 		T& operator[](size_t index) const {
 
+			return elements_[index];
 			// TODO: Your code here
 		}
 
@@ -86,14 +90,14 @@ class MyVector
 		/// Return the number of valid elements in our data
 		size_t size() const {
 
-      return size_;
+      	return size_;
 			// TODO: Your code here
 		}
 
 		/// Return the capacity of our internal array
 		size_t capacity() const {
 
-      return capacity_;
+      	return capacity_;
 			// TODO: Your code here
 		}
 
@@ -104,15 +108,15 @@ class MyVector
 		 */
 		bool empty() const {
 
-      if(size_ == 0) { true }
-      else { false }
+		if(size_ == 0) { return true; }
+		else { return false; }
 			// TODO: Your code here
 		}
 
 		/// Return a reference to the element at an index
 		T& at(size_t index) const {
 
-
+			return elements_[index];
 			// TODO: Your code here
 		}
 
@@ -126,6 +130,8 @@ class MyVector
 		 */
 		void reserve(size_t capacity) {
 
+			if(capacity <= capacity_) { return; }
+			T* capacity_ = new T[capacity]();
 			// TODO: Your code here
 		}
 
@@ -136,6 +142,8 @@ class MyVector
 		 */
 		T& set(size_t index, const T& element) {
 
+      if(index > size_) { throw std::range_error("ERROR: outside the size boundary"); }
+      element = elements_[index];
 			// TODO: Your code here
 		}
 
@@ -145,7 +153,7 @@ class MyVector
 		 * Returns a reference to the newly inserted element
 		 */
 		T& push_back(const T& element) {
-
+      insert(size_, element);
 			// TODO: Your code here
 		}
 
@@ -156,6 +164,8 @@ class MyVector
 		 */
 		size_t pop_back() {
 
+      erase();
+      --size_;
 			// TODO: Your code here
 		}
 
@@ -165,6 +175,14 @@ class MyVector
 		 */
 		T& insert(size_t index, const T& element) {
 
+      if(index > size_)
+      {
+        index = size_;
+      }
+      std::move_backward(elements_ + index, elements_ + size_, elements_ + size_ + 1);
+      capacity_[index] = element;
+      ++size_;
+      return index;
 			// TODO: Your code here
 		}
 
@@ -176,6 +194,9 @@ class MyVector
 		 */
 		size_t erase(size_t index) {
 
+      auto index_ = index - begin();
+      erase(index_);
+      return index;
 			// TODO: Your code here
 		}
 
@@ -185,6 +206,9 @@ class MyVector
 		*/
 		void clear() {
 
+      while(size_ != 0) elements_[--size_].~T();
+      //size_ == 0;
+      capacity_ = MyVector::DEFAULT_CAPACITY;
 			// TODO: Your code here
 		}
 
@@ -213,7 +237,21 @@ class MyVector
 		 */
 		void increaseSize() {
 
-      ++size_;
+      	if(size_ + 1 <= capacity_)
+        {
+          size_++;
+        }
+        else if(size_ + 1 > capacity_)
+        {
+          size_t new_capacity_ = capacity_ * 2;
+          T* new_elements_ = new T[new_capacity_];
+
+          for(int i = 0; i < size-1; i++)
+          {
+            new_elements_[i] = elements_[i];
+          }
+          size_++;
+        }
 			// TODO: Your code here
 		}
 
@@ -224,7 +262,8 @@ class MyVector
 		 */
 		void decreaseSize() {
 
-      --size_;
+      	size_--;
+
 			// TODO: Your code here
 		}
 
@@ -234,7 +273,7 @@ class MyVector
 		 */
 		void changeCapacity(size_t c) {
 
-     if() { throw std::range_error; }
+     	if(size_ > capacity_) { throw std::range_error("ERROR: cannot change to a capacity that cannot hold existing elements"); }
 			// TODO: Your code here
 		}
 
@@ -265,12 +304,14 @@ class MyVector
 		//
 		void assertCapacity(size_t c) const {
 
+      assert(c == capacity_);
 			// TODO: Your code here
 		}
 
 		//
 		void assertBounds(size_t index, std::string message = "") const {
 
+      assert((message, index < capacity_));
 			// TODO: Your code here
 		}
 };
