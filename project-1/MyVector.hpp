@@ -28,8 +28,8 @@ class MyVector
 		MyVector(size_t capacity = MyVector::DEFAULT_CAPACITY) {
 
 		size_ = 0;
-		capacity_ = MyVector::DEFAULT_CAPACITY;
-		elements_ = new T[MyVector::DEFAULT_CAPACITY]();
+		capacity_ = capacity;
+		elements_ = new T[capacity]();
 
       // TODO: Your code here
 		}
@@ -38,7 +38,7 @@ class MyVector
 		MyVector(const MyVector& other) {
 
 		size_ = other.size_;
-		capacity_ = other._capacity;
+		capacity_ = other.capacity_;
 		elements_ = new T[other.capacity_]();
 
 			// TODO: Your code here
@@ -143,7 +143,7 @@ class MyVector
 		T& set(size_t index, const T& element) {
 
       if(index > size_) { throw std::range_error("ERROR: outside the size boundary"); }
-      element = elements_[index];
+      elements_[index] = element;
 			// TODO: Your code here
 		}
 
@@ -152,8 +152,9 @@ class MyVector
 		 * Should rely on the insert() function to avoid repeating code.
 		 * Returns a reference to the newly inserted element
 		 */
-		T& push_back(const T& element) {
-      insert(size_, element);
+  T& push_back(const T& element) {
+  //   insert(size_, element);
+  //   return elements_[element];
 			// TODO: Your code here
 		}
 
@@ -164,9 +165,10 @@ class MyVector
 		 */
 		size_t pop_back() {
 
-      erase();
-      --size_;
-			// TODO: Your code here
+      // erase(1);
+      // --size_;
+      // return size_;
+			// // TODO: Your code here
 		}
 
 		/**
@@ -180,9 +182,9 @@ class MyVector
         index = size_;
       }
       std::move_backward(elements_ + index, elements_ + size_, elements_ + size_ + 1);
-      capacity_[index] = element;
+      elements_[index] = element;
       ++size_;
-      return index;
+      return elements_[index];
 			// TODO: Your code here
 		}
 
@@ -194,9 +196,16 @@ class MyVector
 		 */
 		size_t erase(size_t index) {
 
-      auto index_ = index - begin();
-      erase(index_);
-      return index;
+      // if(index > size_) { throw std::range_error("ERROR: outside the size boundary"); }
+
+      // // = index - begin();
+      // //delete elements_[index];
+      // for(int i = index; i < size_; i++)
+      // {
+      //   elements_[i] = elements_[i + 1];
+      // }
+      // size_--;
+      // return size_;
 			// TODO: Your code here
 		}
 
