@@ -39,7 +39,7 @@ class MyVector
 
 		size_ = other.size_;
 		capacity_ = other.capacity_;
-		elements_ = new T[other.capacity_]();
+		elements_ = other.elements_;
 
 			// TODO: Your code here
 		}
@@ -66,11 +66,11 @@ class MyVector
 
 			if (this != &rhs)
 		{
-		// size_ = rhs.size_;
-		// capacity_ = rhs.capacity_;
-		// elements_  = new T[rhs.capacity_];
-    std::copy( rhs.elements_, rhs.elements_ + rhs.size_, elements_ );
-    size_ = rhs.size_;
+		size_ = rhs.size_;
+		capacity_ = rhs.capacity_;
+		elements_  = rhs.elements_;
+    //std::copy( rhs.elements_, rhs.elements_ + rhs.size_, elements_ );
+    //size_ = rhs.size_;
 		}
 		return *this;
 			// TODO: Your code here
@@ -115,7 +115,7 @@ class MyVector
 
 		/// Return a reference to the element at an index
 		T& at(size_t index) const {
-      if(index > size_ || index < 0) { throw std::range_error("ERROR: outside the size boundary"); }
+      if(index >= size_ || index < 0) { throw std::range_error("ERROR: outside the size boundary"); }
 			return elements_[index];
 			// TODO: Your code here
 		}
@@ -152,6 +152,7 @@ class MyVector
 		T& set(size_t index, const T& element) {
 
       if(index > size_ || index < 0) { throw std::range_error("ERROR: outside the size boundary"); }
+      elements_[index].~T();
       elements_[index] = element;
       return elements_[index];
 			// TODO: Your code here
@@ -241,7 +242,7 @@ class MyVector
       while(size_ != 0) elements_[--size_].~T();
       // for(int i = size_; i >= 0; i--)
       // {}
-      size_ == 0;
+      size_ = 0;
       capacity_ = MyVector::DEFAULT_CAPACITY;
 			// TODO: Your code here
 		}
