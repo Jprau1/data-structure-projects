@@ -53,7 +53,7 @@ class MyVector
 
 		clear();
 		//delete [] elements_;
-    //elements_ = nullptr;
+    elements_ = nullptr;
 			// TODO: Your code here
 		}
 
@@ -188,7 +188,7 @@ class MyVector
 
       if(size_ >= capacity_)
       {
-        reserve(capacity_ + 1);
+        reserve(capacity_ * 2);
       }
       if(index > size_)
       {
@@ -296,6 +296,10 @@ class MyVector
 		void decreaseSize() {
 
       	size_--;
+        if(size_ < (capacity_ / 3) && (capacity_ / 2) >= MyVector::MINIMUM_CAPACITY)
+        {
+          changeCapacity(capacity_ / 2);
+        }
 
 			// TODO: Your code here
 		}
