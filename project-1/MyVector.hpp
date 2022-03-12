@@ -51,8 +51,8 @@ class MyVector
 		 */
 		~MyVector() {
 
-		clear();
-		delete [] elements_;
+		//clear();
+		//delete [] elements_;
     //elements_ = nullptr;
 			// TODO: Your code here
 		}
@@ -175,8 +175,7 @@ class MyVector
 		 */
 		size_t pop_back() {
 
-      // erase(1);
-      // --size_;
+      // erase(0);
       // return size_;
 			// // TODO: Your code here
 		}
@@ -187,24 +186,27 @@ class MyVector
 		 */
 		T& insert(size_t index, const T& element) {
 
-      // if(size_ > capacity_)
+      if(size_ >= capacity_)
+      {
+        reserve(capacity_ + 1);
+      }
+      if(index > size_)
+      {
+        index = size_;
+      }
+      // ++size_;
+      // for(uint i = size_; i > index; i--)
       // {
-      //   reserve(capacity_ + 1);
+      //   elements_[i] = elements_[i - 1];
       // }
 
-      // // for(uint i = index; i < (size_ - 1); i++)
-      // // {
-      // //   elements_[i + 1] = elements_[i];
-      // // }
-
       // elements_[index] = element;
-      // ++size_;
       // return elements_[index];
 
-      // std::move_backward(elements_ + index, elements_ + size_, elements_ + size_ + 1);
-      // elements_[index] = element;
-      // ++size_;
-      // return elements_[index];
+      std::move_backward(elements_ + index, elements_ + size_, elements_ + size_ + 1);
+      elements_[index] = element;
+      ++size_;
+      return elements_[index];
 			// TODO: Your code here
 		}
 
@@ -216,15 +218,13 @@ class MyVector
 		 */
 		size_t erase(size_t index) {
 
-      // if(index > size_) { throw std::range_error("ERROR: outside the size boundary"); }
+      // if(index > capacity_) { throw std::range_error("ERROR: outside the size boundary"); }
 
-      // // = index - begin();
-      // //delete elements_[index];
-      // for(int i = index; i < size_; i++)
+      // for(size_t i = index; i < size_; i++)
       // {
       //   elements_[i] = elements_[i + 1];
       // }
-      // size_--;
+      // --size_;
       // return size_;
 			// TODO: Your code here
 		}
@@ -302,7 +302,17 @@ class MyVector
 		 */
 		void changeCapacity(size_t c) {
 
-     	if(size_ > capacity_) { throw std::range_error("ERROR: cannot change to a capacity that cannot hold existing elements"); }
+     	if(size_ > c) { throw std::range_error("ERROR: cannot change to a capacity that cannot hold existing elements"); }
+
+			T* new_elements_ = new T[c]();
+      for(size_t i = 0; i < size_; i++)
+      {
+        new_elements_[i] = elements_[i];
+      }
+      capacity_ = c;
+      delete [] elements_;
+      elements_ = new_elements_;
+
 			// TODO: Your code here
 		}
 
