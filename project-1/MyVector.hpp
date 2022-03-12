@@ -51,7 +51,7 @@ class MyVector
 		 */
 		~MyVector() {
 
-		//clear();
+		clear();
 		//delete [] elements_;
     //elements_ = nullptr;
 			// TODO: Your code here
@@ -218,14 +218,16 @@ class MyVector
 		 */
 		size_t erase(size_t index) {
 
-      // if(index > capacity_) { throw std::range_error("ERROR: outside the size boundary"); }
+      if(index > size_) { throw std::range_error("ERROR: outside the size boundary"); }
 
       // for(size_t i = index; i < size_; i++)
       // {
       //   elements_[i] = elements_[i + 1];
       // }
-      // --size_;
-      // return size_;
+
+      std::move(elements_ + index + 1, elements_ + size_, elements_ + index);
+      //--size_;
+      return size_;
 			// TODO: Your code here
 		}
 
@@ -236,7 +238,9 @@ class MyVector
 		void clear() {
 
       while(size_ != 0) elements_[--size_].~T();
-      //size_ == 0;
+      // for(int i = size_; i >= 0; i--)
+      // {}
+      size_ == 0;
       capacity_ = MyVector::DEFAULT_CAPACITY;
 			// TODO: Your code here
 		}
