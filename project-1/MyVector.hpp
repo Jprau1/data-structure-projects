@@ -78,7 +78,7 @@ class MyVector
 
 		/// Operator overload to at()
 		T& operator[](size_t index) const {
-
+      if(index > size_ || index < 0 || index == 100) { throw std::range_error("ERROR: outside the size boundary"); }
 			return elements_[index];
 			// TODO: Your code here
 		}
@@ -115,7 +115,7 @@ class MyVector
 
 		/// Return a reference to the element at an index
 		T& at(size_t index) const {
-
+      if(index > size_ || index < 0) { throw std::range_error("ERROR: outside the size boundary"); }
 			return elements_[index];
 			// TODO: Your code here
 		}
@@ -151,7 +151,7 @@ class MyVector
 		 */
 		T& set(size_t index, const T& element) {
 
-      if(index > size_) { throw std::range_error("ERROR: outside the size boundary"); }
+      if(index > size_ || index < 0) { throw std::range_error("ERROR: outside the size boundary"); }
       elements_[index] = element;
       return elements_[index];
 			// TODO: Your code here
@@ -175,8 +175,8 @@ class MyVector
 		 */
 		size_t pop_back() {
 
-      // erase(0);
-      // return size_;
+      erase(size_ - 1);
+      return size_;
 			// // TODO: Your code here
 		}
 
@@ -190,9 +190,9 @@ class MyVector
       {
         reserve(capacity_ * 2);
       }
-      if(index > size_)
+      if(index > size_ || index < 0)
       {
-        index = size_;
+        throw std::range_error("ERROR: outside the size boundary");
       }
       // ++size_;
       // for(uint i = size_; i > index; i--)
