@@ -218,7 +218,7 @@ class MyVector
 		 */
 		size_t erase(size_t index) {
 
-      if(index > size_) { throw std::range_error("ERROR: outside the size boundary"); }
+      if(index > size_ || size_ == 0) { throw std::range_error("ERROR: outside the size boundary"); }
 
       // for(size_t i = index; i < size_; i++)
       // {
@@ -227,6 +227,7 @@ class MyVector
 
       std::move(elements_ + index + 1, elements_ + size_, elements_ + index);
       //--size_;
+      elements_[--size_].~T();
       return size_;
 			// TODO: Your code here
 		}
