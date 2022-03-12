@@ -131,7 +131,16 @@ class MyVector
 		void reserve(size_t capacity) {
 
 			if(capacity <= capacity_) { return; }
-			T* capacity_ = new T[capacity]();
+			T* new_elements_ = new T[capacity]();
+      for(size_t i = 0; i < size_; i++)
+      {
+        new_elements_[i] = elements_[i];
+      }
+      capacity_ = capacity;
+      delete [] elements_;
+      elements_ = new_elements_;
+
+
 			// TODO: Your code here
 		}
 
@@ -144,6 +153,7 @@ class MyVector
 
       if(index > size_) { throw std::range_error("ERROR: outside the size boundary"); }
       elements_[index] = element;
+      return elements_[index];
 			// TODO: Your code here
 		}
 
@@ -153,8 +163,8 @@ class MyVector
 		 * Returns a reference to the newly inserted element
 		 */
   T& push_back(const T& element) {
-  //   insert(size_, element);
-  //   return elements_[element];
+
+      return insert(size_, element);
 			// TODO: Your code here
 		}
 
@@ -177,14 +187,24 @@ class MyVector
 		 */
 		T& insert(size_t index, const T& element) {
 
-      if(index > size_)
-      {
-        index = size_;
-      }
-      std::move_backward(elements_ + index, elements_ + size_, elements_ + size_ + 1);
-      elements_[index] = element;
-      ++size_;
-      return elements_[index];
+      // if(size_ > capacity_)
+      // {
+      //   reserve(capacity_ + 1);
+      // }
+
+      // // for(uint i = index; i < (size_ - 1); i++)
+      // // {
+      // //   elements_[i + 1] = elements_[i];
+      // // }
+
+      // elements_[index] = element;
+      // ++size_;
+      // return elements_[index];
+
+      // std::move_backward(elements_ + index, elements_ + size_, elements_ + size_ + 1);
+      // elements_[index] = element;
+      // ++size_;
+      // return elements_[index];
 			// TODO: Your code here
 		}
 
@@ -255,7 +275,7 @@ class MyVector
           size_t new_capacity_ = capacity_ * 2;
           T* new_elements_ = new T[new_capacity_];
 
-          for(int i = 0; i < size-1; i++)
+          for(size_t i = 0; i < (size() - 1); i++)
           {
             new_elements_[i] = elements_[i];
           }
