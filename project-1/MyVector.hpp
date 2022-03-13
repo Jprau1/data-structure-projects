@@ -4,7 +4,7 @@
 #include <string>
 
 
-//
+// Joseph Rau, 131-05
 template <typename T>
 class MyVector
 {
@@ -26,22 +26,16 @@ class MyVector
 
 		/// Normal constructor
 		MyVector(size_t capacity = MyVector::DEFAULT_CAPACITY) {
-
-		size_ = 0;
-		capacity_ = capacity;
-		elements_ = new T[capacity]();
-
-      // TODO: Your code here
+      size_ = 0;
+      capacity_ = capacity;
+      elements_ = new T[capacity]();
 		}
 
 		/// Copy constructor
 		MyVector(const MyVector& other) {
-
-		size_ = other.size_;
-		capacity_ = other.capacity_;
-		elements_ = other.elements_;
-
-			// TODO: Your code here
+      size_ = other.size_;
+      capacity_ = other.capacity_;
+      elements_ = other.elements_;
 		}
 
 		/**
@@ -50,11 +44,8 @@ class MyVector
 		 * Then, deallocate the internal array and make it a nullptr, if its not already a nullptr.
 		 */
 		~MyVector() {
-
-		clear();
-		//delete [] elements_;
-    elements_ = nullptr;
-			// TODO: Your code here
+      clear();
+      elements_ = nullptr;
 		}
 
 		/************
@@ -63,24 +54,22 @@ class MyVector
 
 		///	Assignment operator
 		MyVector& operator=(const MyVector& rhs) {
+      if (this != &rhs) {
+        size_ = rhs.size_;
+        capacity_ = rhs.capacity_;
+        elements_  = rhs.elements_;
+      }
 
-			if (this != &rhs)
-		{
-		size_ = rhs.size_;
-		capacity_ = rhs.capacity_;
-		elements_  = rhs.elements_;
-    //std::copy( rhs.elements_, rhs.elements_ + rhs.size_, elements_ );
-    //size_ = rhs.size_;
-		}
-		return *this;
-			// TODO: Your code here
+      return *this;
 		}
 
 		/// Operator overload to at()
 		T& operator[](size_t index) const {
-      if(index > size_ || index < 0 || index == 100) { throw std::range_error("ERROR: outside the size boundary"); }
+      if((index >= size_) || (index < 0)) {
+        throw std::range_error("ERROR: outside the size boundary");
+      }
+
 			return elements_[index];
-			// TODO: Your code here
 		}
 
 		/************
@@ -89,16 +78,12 @@ class MyVector
 
 		/// Return the number of valid elements in our data
 		size_t size() const {
-
-      	return size_;
-			// TODO: Your code here
+      return size_;
 		}
 
 		/// Return the capacity of our internal array
 		size_t capacity() const {
-
-      	return capacity_;
-			// TODO: Your code here
+      return capacity_;
 		}
 
 		/**
@@ -107,17 +92,20 @@ class MyVector
 		 * Otherwise, return false
 		 */
 		bool empty() const {
+      if(size_ == 0) {
+        return true;
+      }
 
-		if(size_ == 0) { return true; }
-		else { return false; }
-			// TODO: Your code here
+        return false;
 		}
 
 		/// Return a reference to the element at an index
 		T& at(size_t index) const {
-      if(index >= size_ || index < 0) { throw std::range_error("ERROR: outside the size boundary"); }
+      if((index >= size_) || (index < 0)) {
+        throw std::range_error("ERROR: outside the size boundary");
+      }
+
 			return elements_[index];
-			// TODO: Your code here
 		}
 
 		/***********
@@ -129,19 +117,17 @@ class MyVector
 		 * Useful if we know we're about to add a large number of elements, and we'd like to avoid the overhead of many internal changes to capacity.
 		 */
 		void reserve(size_t capacity) {
-
 			if(capacity <= capacity_) { return; }
+
 			T* new_elements_ = new T[capacity]();
-      for(size_t i = 0; i < size_; i++)
-      {
+
+      for(size_t i = 0; i < size_; i++) {
         new_elements_[i] = elements_[i];
       }
+
       capacity_ = capacity;
       delete [] elements_;
       elements_ = new_elements_;
-
-
-			// TODO: Your code here
 		}
 
 		/**
@@ -150,12 +136,13 @@ class MyVector
 		 * Returns a reference to the newly set element (not the original)
 		 */
 		T& set(size_t index, const T& element) {
+      if((index > size_) || (index < 0)) {
+        throw std::range_error("ERROR: outside the size boundary");
+      }
 
-      if(index > size_ || index < 0) { throw std::range_error("ERROR: outside the size boundary"); }
       elements_[index].~T();
       elements_[index] = element;
       return elements_[index];
-			// TODO: Your code here
 		}
 
 		/**
@@ -164,9 +151,7 @@ class MyVector
 		 * Returns a reference to the newly inserted element
 		 */
   T& push_back(const T& element) {
-
       return insert(size_, element);
-			// TODO: Your code here
 		}
 
 		/**
@@ -175,10 +160,8 @@ class MyVector
 		 * Returns the new size.
 		 */
 		size_t pop_back() {
-
       erase(size_ - 1);
       return size_;
-			// // TODO: Your code here
 		}
 
 		/**
@@ -186,29 +169,19 @@ class MyVector
 		 * Returns a reference to the newly added element (not the original).
 		 */
 		T& insert(size_t index, const T& element) {
-
-      if(size_ >= capacity_)
-      {
-        reserve(capacity_ * 2);
-      }
-      if(index > size_ || index < 0)
-      {
+      if((index > size_) || (index < 0)) {
         throw std::range_error("ERROR: outside the size boundary");
       }
-      // ++size_;
-      // for(uint i = size_; i > index; i--)
-      // {
-      //   elements_[i] = elements_[i - 1];
-      // }
 
-      // elements_[index] = element;
-      // return elements_[index];
+      if(size_ >= capacity_) {reserve(capacity_ * 2);}
 
-      std::move_backward(elements_ + index, elements_ + size_, elements_ + size_ + 1);
+      for(uint i = size_; i > index; i--) {
+        elements_[i] = elements_[i - 1];
+      }
+
       elements_[index] = element;
       ++size_;
       return elements_[index];
-			// TODO: Your code here
 		}
 
 		/**
@@ -218,19 +191,17 @@ class MyVector
 		 * Returns the new size.
 		 */
 		size_t erase(size_t index) {
+      if((index > size_) || (size_ == 0)) {
+         throw std::range_error("ERROR: outside the size boundary");
+      }
 
-      if(index > size_ || size_ == 0) { throw std::range_error("ERROR: outside the size boundary"); }
-
-      // for(size_t i = index; i < size_; i++)
-      // {
-      //   elements_[i] = elements_[i + 1];
-      // }
-
-      std::move(elements_ + index + 1, elements_ + size_, elements_ + index);
-      //--size_;
       elements_[--size_].~T();
+
+      for(size_t i = index; i < size_; i++) {
+        elements_[i] = elements_[i + 1];
+      }
+
       return size_;
-			// TODO: Your code here
 		}
 
 		/**
@@ -238,13 +209,12 @@ class MyVector
 		 * data by setting size to zero and resetting the capacity.
 		*/
 		void clear() {
+      for(int i = size_; i >= 0; i--) {
+        elements_[i - 1].~T();
+      }
 
-      while(size_ != 0) elements_[--size_].~T();
-      // for(int i = size_; i >= 0; i--)
-      // {}
       size_ = 0;
       capacity_ = MyVector::DEFAULT_CAPACITY;
-			// TODO: Your code here
 		}
 
 	/**
@@ -271,23 +241,17 @@ class MyVector
 		 * If more capacity is needed, it is doubled.
 		 */
 		void increaseSize() {
+      if(size_ + 1 <= capacity_) { size_++;}
+      else if(size_ + 1 > capacity_) {
+        size_t new_capacity_ = capacity_ * 2;
+        T* new_elements_ = new T[new_capacity_];
 
-      	if(size_ + 1 <= capacity_)
-        {
-          size_++;
+        for(size_t i = 0; i < (size() - 1); i++) {
+          new_elements_[i] = elements_[i];
         }
-        else if(size_ + 1 > capacity_)
-        {
-          size_t new_capacity_ = capacity_ * 2;
-          T* new_elements_ = new T[new_capacity_];
 
-          for(size_t i = 0; i < (size() - 1); i++)
-          {
-            new_elements_[i] = elements_[i];
-          }
-          size_++;
-        }
-			// TODO: Your code here
+        size_++;
+      }
 		}
 
 		/**
@@ -296,14 +260,11 @@ class MyVector
 		 * Capacity should always be at least MyVector::MINIMUM_CAPACITY
 		 */
 		void decreaseSize() {
+      if(size_ < (capacity_ / 3) && (capacity_ / 2) >= MyVector::MINIMUM_CAPACITY) {
+        changeCapacity(capacity_ / 2);
+      }
 
-      	size_--;
-        if(size_ < (capacity_ / 3) && (capacity_ / 2) >= MyVector::MINIMUM_CAPACITY)
-        {
-          changeCapacity(capacity_ / 2);
-        }
-
-			// TODO: Your code here
+      size_--;
 		}
 
 		/**
@@ -311,19 +272,19 @@ class MyVector
 		 * Should throw std::range_error when asked to change to a capacity that cannot hold our existing elements.
 		 */
 		void changeCapacity(size_t c) {
-
-     	if(size_ > c) { throw std::range_error("ERROR: cannot change to a capacity that cannot hold existing elements"); }
+     	if(size_ > c) {
+         throw std::range_error("ERROR: cannot change to a capacity that cannot hold existing elements");
+      }
 
 			T* new_elements_ = new T[c]();
-      for(size_t i = 0; i < size_; i++)
-      {
+
+      for(size_t i = 0; i < size_; i++) {
         new_elements_[i] = elements_[i];
       }
+
       capacity_ = c;
       delete [] elements_;
       elements_ = new_elements_;
-
-			// TODO: Your code here
 		}
 
 		/**
@@ -333,7 +294,6 @@ class MyVector
 		 * This is a helper function relied upon by the copy constuctor and the assignment operator
 		 */
 		void copyOther(const MyVector& other) {
-
 			// TODO: Your code here
 		}
 
@@ -346,21 +306,16 @@ class MyVector
 		 * Finally, change our size attribute to match.
 		 */
 		void copyElements(T* pElements, size_t size) {
-
 			// TODO: Your code here
 		}
 
 		//
 		void assertCapacity(size_t c) const {
-
       assert(c == capacity_);
-			// TODO: Your code here
 		}
 
 		//
 		void assertBounds(size_t index, std::string message = "") const {
-
       assert((message, index < capacity_));
-			// TODO: Your code here
 		}
 };
