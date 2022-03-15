@@ -117,17 +117,12 @@ class MyVector
 		 * Useful if we know we're about to add a large number of elements, and we'd like to avoid the overhead of many internal changes to capacity.
 		 */
 		void reserve(size_t capacity) {
-			if(capacity <= capacity_) { return; }
-
-			T* new_elements_ = new T[capacity]();
-
-      for(size_t i = 0; i < size_; i++) {
-        new_elements_[i] = elements_[i];
+			if(capacity <= capacity_) {
+         return;
       }
-
-      capacity_ = capacity;
-      delete [] elements_;
-      elements_ = new_elements_;
+      else {
+        changeCapacity(capacity);
+      }
 		}
 
 		/**
@@ -173,7 +168,7 @@ class MyVector
         throw std::range_error("ERROR: outside the size boundary");
       }
 
-      if(size_ >= capacity_) {reserve(capacity_ * 2);}
+      if(size_ >= capacity_) {changeCapacity(capacity_ * 2);}
 
       for(uint i = size_; i > index; i--) {
         elements_[i] = elements_[i - 1];
@@ -294,7 +289,9 @@ class MyVector
 		 * This is a helper function relied upon by the copy constuctor and the assignment operator
 		 */
 		void copyOther(const MyVector& other) {
-			// TODO: Your code here
+			size_ = other.size_;
+      capacity_ = other.capacity_;
+      elements_ = other.elements_;
 		}
 
 		/**
@@ -306,7 +303,18 @@ class MyVector
 		 * Finally, change our size attribute to match.
 		 */
 		void copyElements(T* pElements, size_t size) {
-			// TODO: Your code here
+			if (size > capacity_) {
+        throw std::range_error("ERROR: outside the size boundary");
+      }
+
+      pElements = new T[size]();
+      for(size_t i = 0; i < size_; i++) {
+        elements_[i] = pElements[i];
+      }
+      delete [] pElements;
+      size_ = size;
+      elements_ = pElements;
+
 		}
 
 		//
