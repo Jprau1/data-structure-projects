@@ -142,7 +142,7 @@ namespace CPSC131
 						/**
 						 * Assignment operator
 						 * Return a copy of this Iterator, after modification
-						 */
+						 *///
 						Iterator& operator=(const Iterator& other)
 						{
               if(this != &other)
