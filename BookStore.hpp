@@ -21,20 +21,20 @@ namespace CPSC131
 		class BookStore
 		{
 			public:
-				
+
 				//
 				BookStore();
-				
+
 				//
 				void adjustAccountBalance(int adjustment);
 				int getAccountBalance();
-				
+
 				//
 				Book& getBook(std::string isbn);
 				DoublyLinkedList::DoublyLinkedList<Book>::Iterator findBook(std::string isbn);
 				bool bookExists(std::string isbn);
 				size_t getBookStockAvailable(std::string isbn);
-				
+
 				//
 				void purchaseInventory(const Book& book);
 				void purchaseInventory(
@@ -42,19 +42,19 @@ namespace CPSC131
 					size_t price_cents,
 					size_t unit_count
 				);
-				
+
 				//
 				void sellToCustomer(std::string isbn, size_t price_cents, size_t quantity);
 				void sellToCustomer(Book& book, size_t price_cents, size_t quantity);
-				
+
 				//
 				void printInventory();
-				
+
 			private:
-				
+
 				//
 				::CPSC131::DoublyLinkedList::DoublyLinkedList<Book> bookList;
-				
+
 				int account_balance_ = 0;
 		};
 	}

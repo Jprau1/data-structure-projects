@@ -56,7 +56,7 @@ int main()
 {
 	//
 	Tests tests;
-	
+
 	//
 	std::vector<std::function<Test()>> fs = {
 		printTests,
@@ -66,20 +66,20 @@ int main()
 		iteratorTests,
 		stockSalesTests
 	};
-	
+
 	//
 	for ( auto f : fs ) {
 		tests.add(f());
 	}
-	
+
 	cout << endl << tests.getPassFailLogsAsString() << endl;
-	
+
 	cout << endl;
 	tests.printTestsSummary();
-	
+
 	//
 	tests.writeResultsAsGradescopeJson();
-	
+
 	return 0;
 }
 
@@ -88,21 +88,21 @@ BookStore makeBookStore(bool empty)
 {
 	//
 	BookStore store;
-	
+
 	//
 	auto books = makeBooks();
 	size_t quantity = 50;
 	for ( Book b : books ) {
-		
+
 		//
 		if ( !empty ) {
 			b.adjustStockAvailable(quantity);
 			quantity--;
 		}
-		
+
 		store.purchaseInventory(b);
 	}
-	
+
 	return store;
 }
 
@@ -117,7 +117,7 @@ std::vector<Book> makeBooks()
 		Book("How to Teach Quantum Physics to Your Dog", "Chad Orzel", "1416572295", 2000),
 		Book("How to Train Goldfish Using Dolphin Training Techniques", "C. Scott Johnson", "0533112923", 100)
 	};
-	
+
 	return v;
 }
 
@@ -126,13 +126,13 @@ CPSC131::DoublyLinkedList::DoublyLinkedList<int> makeList()
 {
 	//
 	CPSC131::DoublyLinkedList::DoublyLinkedList<int> list;
-	
+
 	//
 	for ( size_t i = 0; i < 20; i++ ) {
 		int value = (i * 3) - 30;
 		list.push_back(value);
 	}
-	
+
 	return list;
 }
 
@@ -143,13 +143,13 @@ bool checkBookVectorsEqual(const std::vector<Book>& v1, const std::vector<Book>&
 	if ( v1.size() != v2.size() ) {
 		return false;
 	}
-	
+
 	for ( size_t i = 0; i < v1.size(); i++ ) {
 		if ( v1.at(i) != v2.at(i) ) {
 			return false;
 		}
 	}
-	
+
 	return true;
 }
 
@@ -160,14 +160,14 @@ bool checkIntegerListsEqual(CPSC131::DoublyLinkedList::DoublyLinkedList<int>& li
 	if ( list1.size() != list2.size() ) {
 		return false;
 	}
-	
+
 	//
 	for ( size_t i = 0; i < list1.size(); i++ ) {
 		if ( list1.at(i) != list2.at(i) ) {
 			return false;
 		}
 	}
-	
+
 	return true;
 }
 
@@ -178,7 +178,7 @@ void printList(CPSC131::DoublyLinkedList::DoublyLinkedList<T>& list)
 	//
 	auto node = list.head();
 	size_t index = 0;
-	
+
 	//
 	cout << "{";
 	while (node != nullptr)
@@ -188,7 +188,7 @@ void printList(CPSC131::DoublyLinkedList::DoublyLinkedList<T>& list)
 			cout << ", ";
 		}
 		cout << index << ":" << node->getElement();
-		
+
 		//
 		node = node->getNext();
 		index++;
@@ -201,19 +201,19 @@ Test printTests()
 {
 	//
 	Test t("Print");
-	
+
 	//
 	t.assertNoException(
 		[&t]()
 		{
 			//
 			auto store = makeBookStore();
-			
+
 			//
 			OutputCapture cap;
 			store.printInventory();
 			cap.endCapture();
-			
+
 			//
 			string expected = "*** Book Store Inventory ***\n"
 				"\"Brainwashing is a Cinch!\", by James Maratta [B001NDNB7C] (50 in stock)\n"
@@ -222,13 +222,13 @@ Test printTests()
 				"\"How to Teach Quantum Physics to Your Dog\", by Chad Orzel [1416572295] (47 in stock)\n"
 				"\"How to Train Goldfish Using Dolphin Training Techniques\", by C. Scott Johnson [0533112923] (46 in stock)\n"
 				;
-			
+
 			//
 			t.assertEqual(cap.getStdout(), expected, 1, "Basic store printout");
-			
+
 		}, 1, "Print tests"
 	);
-	
+
 	//
 	return t;
 }
@@ -238,7 +238,7 @@ Test basicListTests()
 {
 	//
 	Test t("Basic list");
-	
+
 	//
 	t.assertNoException(
 		[&t]()
@@ -247,7 +247,7 @@ Test basicListTests()
 			{
 				//
 				auto list = makeList();
-				
+
 				//	Check some values
 				t.assertEqual(
 					list.at(0), static_cast<int>(-30),
@@ -261,13 +261,13 @@ Test basicListTests()
 					list.at(16), static_cast<int>(18),
 					1, "Checking random access"
 				);
-				
+
 				//	Size
 				t.assertEqual(
 					list.size(), static_cast<size_t>(20),
 					1, "Checking size"
 				);
-				
+
 				//	Add a couple items at random access
 				list.insert_after(7, 119);
 				list.insert_after(13, 181);
@@ -283,7 +283,7 @@ Test basicListTests()
 					list.at(14), static_cast<int>(181),
 					1, "Checking arbitrary insertion"
 				);
-				
+
 				//	Push back and push front
 				list.push_front(1011);
 				list.push_back(1012);
@@ -299,7 +299,7 @@ Test basicListTests()
 					list.at(list.size() - 1), static_cast<int>(1012),
 					1, "Checking value after push back"
 				);
-				
+
 				//	Check the front and back
 				t.assertEqual(
 					list.front(), static_cast<int>(1011),
@@ -310,10 +310,10 @@ Test basicListTests()
 					1, "Checking value at back()"
 				);
 			}
-			
+
 		}, 1, "Basic add/remove tests"
 	);
-	
+
 	//
 	t.assertNoException(
 		[&t]()
@@ -332,10 +332,10 @@ Test basicListTests()
 				}
 				t.assertTrue(b, 1, "Checking assign() method");
 			}
-			
+
 		}, 1, "Checking assign()"
 	);
-	
+
 	return t;
 }
 
@@ -344,7 +344,7 @@ Test listAssignmentTests()
 {
 	//
 	Test t("List assignment");
-	
+
 	//
 	t.assertNoException(
 		[&t]()
@@ -360,28 +360,28 @@ Test listAssignmentTests()
 				list.push_front(119991111);
 				list.push_front(0);
 				list.push_front(1900000000);
-				
+
 				//
 				auto list2 = list;
 				t.assertTrue(checkIntegerListsEqual(list, list2), 1, "Assignment operator should work");
-				
+
 				//
 				CPSC131::DoublyLinkedList::DoublyLinkedList<int> list3(list);
 				t.assertTrue(checkIntegerListsEqual(list, list3), 1, "Copy constructore should work");
-				
+
 				//	Check comparison
 				t.assertTrue(list == list2 && list2.size() > 0, 1, "Comparison operator check");
 				t.assertFalse(list != list2 || list2.size() == 0, 1, "Inequality operator check");
-				
+
 				//	Make list3 different, then recheck comparisons
 				list3.push_back(0);
 				t.assertFalse(list == list3 || list3.size() == 0, 1, "Comparison operator check");
 				t.assertTrue(list != list3 && list3.size() > 0, 1, "Inequality operator check");
 			}
-			
+
 		}, 1, "List assignment tests"
 	);
-	
+
 	return t;
 }
 
@@ -390,7 +390,7 @@ Test listReverseTests()
 {
 	//
 	Test t("Reverse");
-	
+
 	//
 	t.assertNoException(
 		[&t]()
@@ -398,7 +398,7 @@ Test listReverseTests()
 			{
 				auto list1 = makeList();
 				auto list2 = list1;
-				
+
 				list2.clear();
 				list2.push_back(27);
 				list2.push_back(24);
@@ -420,16 +420,16 @@ Test listReverseTests()
 				list2.push_back(-24);
 				list2.push_back(-27);
 				list2.push_back(-30);
-				
+
 				list1.reverse();
-				
+
 				t.assertTrue(
 					list1.size() == 20 && list1 == list2, 2, "Correctly reverse a list"
 				);
 			}
 		}, 1, "Reverse tests"
 	);
-	
+
 	return t;
 }
 
@@ -438,7 +438,7 @@ Test iteratorTests()
 {
 	//
 	Test t("Iterators");
-	
+
 	//
 	t.assertNoException(
 		[&t]()
@@ -447,7 +447,7 @@ Test iteratorTests()
 				//
 				auto list = makeList();
 				auto itr = list.begin();
-				
+
 				//
 				itr++;
 				t.assertEqual(
@@ -459,21 +459,21 @@ Test iteratorTests()
 					(*itr), static_cast<int>(-24),
 					1, "Prefix iterator increment"
 				);
-				
+
 				//
 				itr += 10;
 				t.assertEqual(
 					(*itr), static_cast<int>(6),
 					1, "Iterator addition assignment"
 				);
-				
+
 				//
 				itr -= 4;
 				t.assertEqual(
 					(*itr), static_cast<int>(-6),
 					1, "Iterator subtraction assignment"
 				);
-				
+
 				//
 				itr--;
 				t.assertEqual(
@@ -485,7 +485,7 @@ Test iteratorTests()
 					(*itr), static_cast<int>(-12),
 					1, "Prefix iterator decrement"
 				);
-				
+
 				//	Assign and compare iterators
 				auto itr2 = itr;
 				t.assertTrue(
@@ -497,7 +497,7 @@ Test iteratorTests()
 					itr != itr2,
 					1, "Iterators should not be equal after has is advanced"
 				);
-				
+
 				//	Try to get the cursor out-of-bounds
 				itr += 5000;
 				t.assertTrue(
@@ -505,10 +505,10 @@ Test iteratorTests()
 					1, "Depleted iterator should become end()"
 				);
 			}
-			
+
 		}, 1, "Iterator tests"
 	);
-	
+
 	return t;
 }
 
@@ -517,7 +517,7 @@ Test stockSalesTests()
 {
 	//
 	Test t("Stock/Sales");
-	
+
 	//
 	t.assertNoException(
 		[&t]()
@@ -526,14 +526,14 @@ Test stockSalesTests()
 			{
 				//
 				auto store = makeBookStore();
-				
+
 				//	Check initial balance
 				//	(50×900)+(49×550)+(48×1200)+(47×2000)+(46×100) == -228150
 				t.assertEqual(
 					store.getAccountBalance(), static_cast<int>(-228150),
 					1, "Correct balance after adding initial books"
 				);
-				
+
 				//	Add additional book to check balance
 				//	-228150 - (999*3) == -231147
 				store.purchaseInventory(Book("Ninja Mind Control", "Ashida Kim", "1435769244", 999, 3));
@@ -541,13 +541,13 @@ Test stockSalesTests()
 					store.getAccountBalance(), static_cast<int>(-231147),
 					1, "Correct balance after adding new book"
 				);
-				
+
 				//	Check stock on the new book
 				t.assertEqual(
 					store.getBookStockAvailable("1435769244"), static_cast<size_t>(3),
 					1, "Correct stock on newly added book"
 				);
-				
+
 				//	Add more of an existing book to check balance
 				//	-231147 - (1000*2) == -233147
 				store.purchaseInventory(Book("Bla", "Bla", "1435769244", 1000, 2));
@@ -559,7 +559,7 @@ Test stockSalesTests()
 					store.getBookStockAvailable("1435769244"), static_cast<size_t>(5),
 					1, "Correct stock after adding 2 more"
 				);
-				
+
 				//	Get an exception if we try to oversell this book
 				t.assertException(
 					[&t, &store]()
@@ -568,7 +568,7 @@ Test stockSalesTests()
 						store.sellToCustomer("1435769244", 2000, 6);
 					}, 1, "Should find exception if we oversell"
 				);
-				
+
 				//	Increase funds after customer purchases one book
 				//store.printInventory();
 				store.sellToCustomer("1435769244", 2000, 3);
@@ -577,11 +577,11 @@ Test stockSalesTests()
 					1, "Correct balance after selling some books"
 				);
 			}
-			
+
 			{
 				//	Starts with balance -228150
 				auto store = makeBookStore();
-				
+
 				//	Adjust balance
 				store.adjustAccountBalance(12983);
 				t.assertEqual(
@@ -593,7 +593,7 @@ Test stockSalesTests()
 					store.getAccountBalance(), static_cast<int>(-215395),
 					1, "Adjust account balance"
 				);
-				
+
 				//	Check inventory
 				t.assertTrue(
 					store.bookExists("0533112923"), 1, "Calling bookExists() on existing book"
@@ -602,14 +602,9 @@ Test stockSalesTests()
 					store.bookExists("053zzz3112923"), 1, "Calling bookExists() on non-existing book"
 				);
 			}
-			
+
 		}, 2, "Account balance tests"
 	);
-	
+
 	return t;
 }
-
-
-
-
-
