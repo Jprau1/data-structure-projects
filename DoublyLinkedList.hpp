@@ -132,7 +132,7 @@ namespace CPSC131
 						{
               // tail_->getNext() = nullptr;
               // return tail_->getNext();
-              // return nullptr;
+              return nullptr;
 						}
 
 						///	Get the node this iterator is currently pointing to
@@ -147,32 +147,32 @@ namespace CPSC131
 						 *///
 						Iterator& operator=(const Iterator& other)
 						{
-              // if(this != &other)
-              // {
-              //   head_ = other.head_;
-              //   tail_ = other.tail_;
-              //   cursor_ = other.cursor_;
-              // }
-              // return *this;
+              if(this != &other)
+              {
+                head_ = other.head_;
+                tail_ = other.tail_;
+                cursor_ = other.cursor_;
+              }
+              return *this;
 						}
 
 						///	Comparison operator
 						bool operator==(const Iterator& other)
 						{
-              // if(cursor_ == other.cursor_) {
-              //   return true;
-              // } else {
-              //   return false;
-              // }
+              if(cursor_ == other.cursor_) {
+                return true;
+              } else {
+                return false;
+              }
 						}
 						///	Inequality comparison operator
 						bool operator!=(const Iterator& other)
 						{
-              // if(*this == other) {
-              //   return false;
-              // } else {
-              //   return true;
-              // }
+              if(*this == other) {
+                return false;
+              } else {
+                return true;
+              }
 						}
 
 						/**
@@ -182,8 +182,8 @@ namespace CPSC131
 						Iterator& operator++()
 						{
               // if(cursor_ == nullptr) { throw std::invalid_argument("Error: cursor is null"); }
-              // cursor_ = cursor_->getNext();
-              // return *this;
+              cursor_ = cursor_->getNext();
+              return *this;
 						}
 
 						/**
@@ -194,7 +194,6 @@ namespace CPSC131
 						{
               // Iterator temp( *this );
               // operator++();
-              // // ++(*this);
               // return temp;
 						}
 
@@ -204,7 +203,7 @@ namespace CPSC131
 						 */
 						Iterator& operator--()
 						{
-              // this->cursor_->getPrev();
+              // cursor_ = cursor_->getPrev();
               // return *this;
 
 						}
@@ -230,8 +229,10 @@ namespace CPSC131
 						*/
 						Iterator operator +=(size_t add)
 						{
-              // cursor_ = cursor_ + add;
-              // return *this;
+              // for(int i = 0; i < add; i++)
+              // {
+              //   cursor_ = cursor_->getnext();
+              // }
 						}
 						/**
 						 * SubtractionAssignment operator
@@ -239,11 +240,11 @@ namespace CPSC131
 						 */
 						Iterator operator -=(size_t add)
 						{
-              for(int i = 0; i < add; i++)
-              {
-                cursor_ = cursor_->getPrev();
-              }
-              return *this;
+              // for(int i = 0; i < add; i++)
+              // {
+              //   cursor_ = cursor_->getPrev();
+              // }
+              // return *this;
               // cursor_ = cursor_ - add;
               // return *this;
 						}
@@ -367,7 +368,7 @@ namespace CPSC131
 				Iterator begin()
 				{
           // auto itr = begin();
-          // return Iterator(nullptr, nullptr, head_);
+          return Iterator(nullptr, nullptr, head_);
 				}
 
 				/**
@@ -378,7 +379,7 @@ namespace CPSC131
           // auto itr = begin();
           // for(; begin() != end(); itr++) {}
           // return itr;
-          // return Iterator(nullptr, tail_);
+          return Iterator(nullptr, nullptr, tail_);
 				}
 
 				/**
@@ -390,7 +391,7 @@ namespace CPSC131
 				Iterator end()
 				{
           // return end();
-          return Iterator(nullptr, nullptr);
+          return Iterator(nullptr, nullptr, nullptr);
           // return nullptr;
 				}
 
@@ -442,7 +443,27 @@ namespace CPSC131
 				 */
 				Iterator insert_after(Iterator pos, const T& value)
 				{
+          Node<T>* newNode = new Node<T>;
+          newNode->setElement(value);
+          if(empty()) {head_ = tail_ = newNode;}
 
+          else if(pos.getCursor() == head_) {
+            // newNode->setNext(pos.getCursor()->getNext());
+            // newNode->setPrev(pos.getCursor());
+            // pos.getCursor()->getNext()->setPrev(newNode);
+            // pos.getCursor()->setNext(newNode);
+            newNode->setNext(head_);
+            head_->setPrev(newNode);
+            head_ = newNode;
+          }
+
+          else if(pos.getCursor() == nullptr) {
+            tail_->setNext(newNode);
+            newNode->setPrev(tail_);
+            tail_ = newNode;
+          }
+          ++size_;
+          return Iterator(nullptr, nullptr, newNode);
 				}
 
 				/**
@@ -457,7 +478,11 @@ namespace CPSC131
 				*/
 				Iterator insert_after(size_t pos, const T& value)
 				{
-
+          // auto itr = begin();
+          // itr = std::advance(itr, pos);
+          // // while(itr < static_cast<int>(pos)) {itr++;}
+          // return insert_after(itr, value);
+          size_++;
 				}
 
 				/**
@@ -473,7 +498,6 @@ namespace CPSC131
 				{
           if(pos.getCursor() == nullptr) throw std::range_error("iterator does not point to a valid node");
 
-
           if(pos.getCursor() == head_){
             if(pos.getCursor() == tail_) {
               // tail_ = tail_->getPrev();
@@ -481,6 +505,7 @@ namespace CPSC131
               // delete pos.getCursor();
               // return this->end();
               head_ = tail_ = nullptr;
+              // return this->end();
             }
             else {
               head_ = head_->getNext();
@@ -509,7 +534,14 @@ namespace CPSC131
 				 */
 				Iterator push_after(Iterator pos, const T& value)
 				{
-
+          // Node<T>* newNode = new Node<T>;
+          // // if(empty()) {head_ = tail_ = newNode;}
+          // newNode->setElement(value);
+          // pos.getCursor()->setNext(newNode);
+          // newNode->setPrev(pos.getCursor());
+          // newNode->setNext(pos.getCursor()->getNext()->getNext());
+          // ++size_;
+          // return Iterator(nullptr, nullptr, newNode);
 				}
 
 				/**
@@ -517,13 +549,13 @@ namespace CPSC131
 				 */
 				void push_front(const T& value)
 				{
-          // Node<T>* newNode = new Node<T>;
-          // // Node<T>* newNode = new Node(value);
-          // newNode->setElement(value);
-          // newNode->setNext(this->head_);
-          // newNode->setPrev(nullptr);
-          // this->head_ = newNode->getPrev();
-          // size_++;
+          Node<T>* newNode = new Node<T>;
+          if(empty()) {head_ = tail_ = newNode;}
+          newNode->setElement(value);
+          newNode->setNext(head_);
+          newNode->setPrev(newNode);
+          head_ = newNode;
+          ++size_;
 				}
 
 				/**
@@ -550,7 +582,7 @@ namespace CPSC131
 				 */
 				void pop_front()
 				{
-          if(size_ == 0) throw std::length_error("empty list");
+          if(empty()) throw std::length_error("empty list");
 
           erase(begin());
           // Node<T>* u = head_;
@@ -567,8 +599,8 @@ namespace CPSC131
 				 */
 				T& front()
 				{
-          // if(empty() == true) throw std::length_error("empty list");
-          // return head_->getElement();
+          if(empty() == true) throw std::length_error("empty list");
+          return head_->getElement();
 				}
 
 				/**
@@ -578,8 +610,8 @@ namespace CPSC131
 				 */
 				T& back()
 				{
-          // if(empty() == true) throw std::length_error("empty list");
-          // return tail_->getElement();
+          if(empty() == true) throw std::length_error("empty list");
+          return tail_->getElement();
 				}
 
 				/**
