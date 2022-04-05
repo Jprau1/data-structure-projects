@@ -181,7 +181,6 @@ namespace CPSC131
 						 */
 						Iterator& operator++()
 						{
-              // if(cursor_ == nullptr) { throw std::invalid_argument("Error: cursor is null"); }
               cursor_ = cursor_->getNext();
               return *this;
 						}
@@ -192,9 +191,9 @@ namespace CPSC131
 						 */
 						Iterator operator++(int)
 						{
-              // Iterator temp( *this );
-              // operator++();
-              // return temp;
+              Iterator temp( *this );
+              operator++();
+              return temp;
 						}
 
 						/**
@@ -203,8 +202,8 @@ namespace CPSC131
 						 */
 						Iterator& operator--()
 						{
-              // cursor_ = cursor_->getPrev();
-              // return *this;
+              cursor_ = cursor_->getPrev();
+              return *this;
 
 						}
 
@@ -214,13 +213,9 @@ namespace CPSC131
 						 */
 						Iterator operator--(int)
 						{
-              // Iterator temp( *this );
-              // operator--();
-              // return temp;
-
-              // Iterator temp = *this;
-              // --(*this);
-              // return temp;
+              Iterator temp( *this );
+              operator--();
+              return temp;
 						}
 
 						/**
@@ -229,10 +224,8 @@ namespace CPSC131
 						*/
 						Iterator operator +=(size_t add)
 						{
-              // for(int i = 0; i < add; i++)
-              // {
-              //   cursor_ = cursor_->getnext();
-              // }
+              auto itr = std::next(this, add);
+              return *itr;
 						}
 						/**
 						 * SubtractionAssignment operator
@@ -240,13 +233,8 @@ namespace CPSC131
 						 */
 						Iterator operator -=(size_t add)
 						{
-              // for(int i = 0; i < add; i++)
-              // {
-              //   cursor_ = cursor_->getPrev();
-              // }
-              // return *this;
-              // cursor_ = cursor_ - add;
-              // return *this;
+              auto itr = std::prev(this, add);
+              return *itr;
 						}
 
 						/**
@@ -254,8 +242,12 @@ namespace CPSC131
 						 */
 						Iterator operator +=(int add)
 						{
-              // cursor_ = cursor_ + add;
-              // return *this;
+              // if(add < 0){
+              // auto itr = std::prev(this, add);
+              // return *itr;
+              // }
+              // auto itr = std::next(this, add);
+              // return *itr;
 						}
 
 						/**
@@ -263,8 +255,12 @@ namespace CPSC131
 						 */
 						Iterator operator -=(int subtract)
 						{
-              // cursor_ = cursor_ - subtract;
-              // return *this;
+              if(subtract < 0){
+              auto itr = std::prev(this, subtract);
+              return *itr;
+              }
+              auto itr = std::next(this, subtract);
+              return *itr;
 						}
 
 						/**
@@ -272,8 +268,7 @@ namespace CPSC131
 						 */
 						T& operator*()
 						{
-              // if(cursor_ == nullptr) throw std::invalid_argument("ERROR: cursor points to null");
-              // return cursor_->getElement();
+              return cursor_->getElement();
 						}
 
 					private:
@@ -367,7 +362,6 @@ namespace CPSC131
 				 */
 				Iterator begin()
 				{
-          // auto itr = begin();
           return Iterator(nullptr, nullptr, head_);
 				}
 
@@ -376,9 +370,6 @@ namespace CPSC131
 				 */
 				Iterator last()
 				{
-          // auto itr = begin();
-          // for(; begin() != end(); itr++) {}
-          // return itr;
           return Iterator(nullptr, nullptr, tail_);
 				}
 
@@ -390,9 +381,7 @@ namespace CPSC131
 				 */
 				Iterator end()
 				{
-          // return end();
           return Iterator(nullptr, nullptr, nullptr);
-          // return nullptr;
 				}
 
 				/**
@@ -423,9 +412,9 @@ namespace CPSC131
 				 */
 				void clear()
 				{
-          // while(size_ != 0) {
-          //   pop_front();
-          // }
+          while(!empty()) {
+            pop_front();
+          }
 				}
 
 				/**
@@ -478,11 +467,9 @@ namespace CPSC131
 				*/
 				Iterator insert_after(size_t pos, const T& value)
 				{
-          // auto itr = begin();
-          // itr = std::advance(itr, pos);
-          // // while(itr < static_cast<int>(pos)) {itr++;}
-          // return insert_after(itr, value);
-          size_++;
+          auto itr = begin();
+          itr += pos;
+          return insert_after(itr, value);
 				}
 
 				/**
@@ -522,8 +509,12 @@ namespace CPSC131
             pos.getCursor()->getPrev()->setNext(pos.getCursor()->getNext());
           }
             --size_;
+          // if(tail_ == nullptr) {
+          //   delete pos.getCursor();
+          //   return this->end();
+          // }
             Iterator returnNode(nullptr, nullptr, pos.getCursor()->getNext());
-            delete pos.getCursor();
+            //delete pos.getCursor();
             return returnNode;
 				}
 
@@ -621,13 +612,13 @@ namespace CPSC131
 				 */
 				T& at(size_t index)
 				{
-          // if((index >= size_) || (index < 0)) {
-          //   throw std::range_error("ERROR: outside the size boundary");
-          // }
-          // size_t i = 0;
-          // for(auto itr = begin(); itr != end(); itr++, i++) {
-          //   if(i == index) {return *itr;}
-          // }
+          if((index >= size_) || (index < 0)) {
+            throw std::range_error("ERROR: outside the size boundary");
+          }
+
+          auto itr = begin();
+          itr += index;
+          return *itr;
 				}
 
 				/**
@@ -675,7 +666,13 @@ namespace CPSC131
 				 */
 				DoublyLinkedList<T>& operator =(DoublyLinkedList<T>& other)
 				{
-          // this->clear();
+          if(this != &other) {
+          this->clear();
+          this->size() = other.size();
+          for(size_t i = 0; i < other.size(); i++)
+          pushback(other.at(i));
+          }
+          return *this;
 				}
 
 				/**
@@ -690,13 +687,25 @@ namespace CPSC131
 				 */
 				bool operator ==(DoublyLinkedList<T>& other)
 				{
-          // if(size_ == other.size_) {
-          //   for(size_t i = 0; i < size_; i++) {
-          //     if(this->getElement() != other.getElement()) return false;
-          //     this->getNext();
-          //     other.getNext();
-          //   }
-          // }
+          if(size_ != other.size_) {
+            return false;
+          }
+          return true;
+          Node<T>* thisNode = new Node<T>;
+          Node<T>* otherNode = new Node<T>;
+          thisNode = head();
+          otherNode = other.head();
+
+          while(thisNode->getNext() != nullptr) { // infinite loop?
+            if(thisNode->getElement() != otherNode->getElement())
+            {
+              return false;
+            }
+            thisNode->getNext();
+            otherNode->getNext();
+          }
+          return true;
+
 				}
 
 				/**
@@ -708,7 +717,8 @@ namespace CPSC131
 				 */
 				bool operator !=(DoublyLinkedList<T>& other)
 				{
-
+          if(*this == other) {return false;}
+          return true;
 				}
 
 			private:
