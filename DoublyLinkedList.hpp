@@ -223,10 +223,12 @@ namespace CPSC131
 						*/
 						Iterator operator +=(size_t add)
 						{
-              cursor_ = std::next(cursor_, add);
-              return *this;
-              // auto itr = std::next(this, add);
-              // return *itr;
+              // cursor_ = std::next(cursor_, add);
+              // return *this;
+
+              // Iterator temp(*this);
+              // for(size_t i = 0; i < add; i++) {operator++();}
+              // return temp;
 						}
 						/**
 						 * SubtractionAssignment operator
@@ -238,6 +240,10 @@ namespace CPSC131
               // return *this;
               // auto itr = std::prev(this, add);
               // return *itr;
+
+              // Iterator temp(*this);
+              // for(size_t i = 0; i > add; i--) {operator--();}
+              // return temp;
 						}
 
 						/**
@@ -257,6 +263,13 @@ namespace CPSC131
               // return *this;
               // }
               // cursor_ = std::next(cursor_, add);
+              // return *this;
+
+              // if(add < 0){
+              // operator-=(add);
+              // return *this;
+              // }
+              // operator+=(add);
               // return *this;
 						}
 
@@ -426,9 +439,9 @@ namespace CPSC131
 				 */
 				void clear()
 				{
-          // while(!empty()) {
-          //   pop_front();
-          // }
+          while(!empty()) {
+            pop_front();
+          }
 				}
 
 				/**
@@ -451,9 +464,6 @@ namespace CPSC131
           if(empty()) {head_ = tail_ = newNode;}
 
           else if(pos.getCursor() == head_) {
-            // newNode->setNext(head_);
-            // head_->setPrev(newNode);
-            // head_ = newNode;
             if(head_->getNext() != nullptr) {head_->getNext()->setPrev(newNode);}
             newNode->setNext(head_->getNext());
             head_->setNext(newNode);
