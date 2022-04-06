@@ -224,6 +224,8 @@ namespace CPSC131
 						*/
 						Iterator operator +=(size_t add)
 						{
+              // cursor_ = std::next(cursor_, add);
+              // return *this;
               auto itr = std::next(this, add);
               return *itr;
 						}
@@ -233,6 +235,8 @@ namespace CPSC131
 						 */
 						Iterator operator -=(size_t add)
 						{
+              // cursor_ = std::prev(cursor_, add);
+              // return *this;
               auto itr = std::prev(this, add);
               return *itr;
 						}
@@ -255,12 +259,12 @@ namespace CPSC131
 						 */
 						Iterator operator -=(int subtract)
 						{
-              if(subtract < 0){
-              auto itr = std::prev(this, subtract);
-              return *itr;
-              }
-              auto itr = std::next(this, subtract);
-              return *itr;
+              // if(subtract < 0){
+              // auto itr = std::next(this, subtract);
+              // return *itr;
+              // }
+              // auto itr = std::prev(this, subtract);
+              // return *itr;
 						}
 
 						/**
@@ -314,10 +318,10 @@ namespace CPSC131
 				 */
 				void assign(size_t count, const T& value)
 				{
-          // this->clear();
-          // for(size_t i = 0; i < count; i++) {
-          //   push_front(value);
-          // }
+          this->clear();
+          for(size_t i = 0; i < count; i++) {
+            push_front(value);
+          }
 				}
 
 				/**
@@ -338,13 +342,10 @@ namespace CPSC131
 				 */
 				void assign(Iterator first, Iterator last)
 				{
-          // this->clear();
-          // Node<T>* newNode = new Node<T>;
-
-          // for(; first != last; first++){
-          //   newNode.setElement(*first);
-          // }
-          // this = newNode;
+          this->clear();
+          for(; first != last; first++){
+            assign(*first);
+          }
 				}
 
 				/// Return a pointer to the head node, if any
@@ -525,14 +526,15 @@ namespace CPSC131
 				 */
 				Iterator push_after(Iterator pos, const T& value)
 				{
-          // Node<T>* newNode = new Node<T>;
-          // // if(empty()) {head_ = tail_ = newNode;}
-          // newNode->setElement(value);
-          // pos.getCursor()->setNext(newNode);
-          // newNode->setPrev(pos.getCursor());
-          // newNode->setNext(pos.getCursor()->getNext()->getNext());
-          // ++size_;
-          // return Iterator(nullptr, nullptr, newNode);
+          Node<T>* newNode = new Node<T>;
+          // if(empty()) {head_ = tail_ = newNode;}
+          newNode->setElement(value);
+          newNode->setNext(pos.getCursor()->getNext());
+          pos.getCursor()->getNext()->setPrev(newNode);
+          pos.getCursor()->setNext(newNode);
+          newNode->setPrev(pos.getCursor());
+          ++size_;
+          return Iterator(nullptr, nullptr, newNode);
 				}
 
 				/**
@@ -574,13 +576,7 @@ namespace CPSC131
 				void pop_front()
 				{
           if(empty()) throw std::length_error("empty list");
-
           erase(begin());
-          // Node<T>* u = head_;
-          // head_ = head_->getNext();
-          // delete u;
-          // // if(head_ != nullptr) {head_->setPrev(nullptr);}
-          // size_--;
 				}
 
 				/**
