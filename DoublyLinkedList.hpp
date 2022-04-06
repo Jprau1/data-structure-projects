@@ -130,8 +130,6 @@ namespace CPSC131
 						///	Get a node pointer representing "end" (aka "depleted"). Probably want to just use nullptr.
 						Node<T>* end()
 						{
-              // tail_->getNext() = nullptr;
-              // return tail_->getNext();
               return nullptr;
 						}
 
@@ -181,6 +179,7 @@ namespace CPSC131
 						 */
 						Iterator& operator++()
 						{
+              // if(cursor_ == nullptr) throw std::invalid_argument("inval arg");
               cursor_ = cursor_->getNext();
               return *this;
 						}
@@ -224,10 +223,10 @@ namespace CPSC131
 						*/
 						Iterator operator +=(size_t add)
 						{
-              // cursor_ = std::next(cursor_, add);
-              // return *this;
-              auto itr = std::next(this, add);
-              return *itr;
+              cursor_ = std::next(cursor_, add);
+              return *this;
+              // auto itr = std::next(this, add);
+              // return *itr;
 						}
 						/**
 						 * SubtractionAssignment operator
@@ -237,8 +236,8 @@ namespace CPSC131
 						{
               // cursor_ = std::prev(cursor_, add);
               // return *this;
-              auto itr = std::prev(this, add);
-              return *itr;
+              // auto itr = std::prev(this, add);
+              // return *itr;
 						}
 
 						/**
@@ -252,6 +251,13 @@ namespace CPSC131
               // }
               // auto itr = std::next(this, add);
               // return *itr;
+
+              // if(add < 0){
+              // cursor_ = std::prev(cursor_, add);
+              // return *this;
+              // }
+              // cursor_ = std::next(cursor_, add);
+              // return *this;
 						}
 
 						/**
@@ -265,6 +271,13 @@ namespace CPSC131
               // }
               // auto itr = std::prev(this, subtract);
               // return *itr;
+
+              // if(subtract < 0){
+              // cursor_ = std::next(cursor_, subtract);
+              // return *this;
+              // }
+              // cursor_ = std::prev(cursor_, subtract);
+              // return *this;
 						}
 
 						/**
@@ -413,9 +426,9 @@ namespace CPSC131
 				 */
 				void clear()
 				{
-          while(!empty()) {
-            pop_front();
-          }
+          // while(!empty()) {
+          //   pop_front();
+          // }
 				}
 
 				/**
@@ -438,12 +451,13 @@ namespace CPSC131
           if(empty()) {head_ = tail_ = newNode;}
 
           else if(pos.getCursor() == head_) {
-            // newNode->setNext(pos.getCursor()->getNext());
-            // newNode->setPrev(pos.getCursor());
-            // pos.getCursor()->getNext()->setPrev(newNode);
-            // pos.getCursor()->setNext(newNode);
-            newNode->setNext(head_);
-            head_->setPrev(newNode);
+            // newNode->setNext(head_);
+            // head_->setPrev(newNode);
+            // head_ = newNode;
+            if(head_->getNext() != nullptr) {head_->getNext()->setPrev(newNode);}
+            newNode->setNext(head_->getNext());
+            head_->setNext(newNode);
+            newNode->setPrev(head_);
             head_ = newNode;
           }
 
@@ -451,6 +465,13 @@ namespace CPSC131
             tail_->setNext(newNode);
             newNode->setPrev(tail_);
             tail_ = newNode;
+          }
+
+          else {
+            newNode->setNext(pos.getCursor()->getNext());
+            pos.getCursor()->getNext()->setPrev(newNode);
+            pos.getCursor()->setNext(newNode);
+            newNode->setPrev(pos.getCursor());
           }
           ++size_;
           return Iterator(nullptr, nullptr, newNode);
@@ -469,7 +490,9 @@ namespace CPSC131
 				Iterator insert_after(size_t pos, const T& value)
 				{
           auto itr = begin();
-          itr += pos;
+          // itr += pos;
+          for(size_t i = 0; i < pos; itr++, i++ ){}
+
           return insert_after(itr, value);
 				}
 
@@ -488,12 +511,9 @@ namespace CPSC131
 
           if(pos.getCursor() == head_){
             if(pos.getCursor() == tail_) {
-              // tail_ = tail_->getPrev();
-              // tail_->setNext(nullptr);
-              // delete pos.getCursor();
-              // return this->end();
               head_ = tail_ = nullptr;
-              // return this->end();
+              //delete pos.getCursor();
+              //return this->end();
             }
             else {
               head_ = head_->getNext();
@@ -510,10 +530,6 @@ namespace CPSC131
             pos.getCursor()->getPrev()->setNext(pos.getCursor()->getNext());
           }
             --size_;
-          // if(tail_ == nullptr) {
-          //   delete pos.getCursor();
-          //   return this->end();
-          // }
             Iterator returnNode(nullptr, nullptr, pos.getCursor()->getNext());
             //delete pos.getCursor();
             return returnNode;
@@ -613,7 +629,10 @@ namespace CPSC131
           }
 
           auto itr = begin();
-          itr += index;
+          // itr += index;
+
+          for(size_t i = 0; i < index; itr++, i++ ){}
+
           return *itr;
 				}
 

@@ -141,11 +141,11 @@ namespace CPSC131::BookStore
 	 */
 	void BookStore::printInventory()
 	{
-    cout << "*** Book Store Inventory ***" << endl;
-    for(auto itr = bookList.begin(); itr != bookList.end(); itr++) {
-      cout << '"' << (*itr).getTitle() << '"' << ", by " << (*itr).getAuthor() << ' '
-      << (*itr).getIsbn() << '(' << (*itr).getStockAvailable() << " in stock)" << endl;
-      }
+    // cout << "*** Book Store Inventory ***" << endl;
+    // for(auto itr = bookList.begin(); itr != bookList.end(); itr++) {
+    //   cout << '"' << (*itr).getTitle() << '"' << ", by " << (*itr).getAuthor() << ' '
+    //   << (*itr).getIsbn() << '(' << (*itr).getStockAvailable() << " in stock)" << endl;
+    //   }
 	}
 
 	/**
