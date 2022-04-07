@@ -123,7 +123,7 @@ namespace CPSC131
 						///	Get a pointer to the head node, or end() if this list is empty
 						Node<T>* begin()
 						{
-              if(empty() == true) { return this->end(); }
+              //if(size_ == 0) { return this->end(); }
               return this->head_;
 						}
 
@@ -179,7 +179,6 @@ namespace CPSC131
 						 */
 						Iterator& operator++()
 						{
-              // if(cursor_ == nullptr) throw std::invalid_argument("inval arg");
               cursor_ = cursor_->getNext();
               return *this;
 						}
@@ -191,7 +190,8 @@ namespace CPSC131
 						Iterator operator++(int)
 						{
               Iterator temp( *this );
-              operator++();
+              // operator++();
+              cursor_ = cursor_->getNext();
               return temp;
 						}
 
@@ -213,7 +213,7 @@ namespace CPSC131
 						Iterator operator--(int)
 						{
               Iterator temp( *this );
-              operator--();
+              cursor_ = cursor_->getPrev();
               return temp;
 						}
 
@@ -223,12 +223,12 @@ namespace CPSC131
 						*/
 						Iterator operator +=(size_t add)
 						{
-              // cursor_ = std::next(cursor_, add);
-              // return *this;
-
-              // Iterator temp(*this);
-              // for(size_t i = 0; i < add; i++) {operator++();}
-              // return temp;
+              for(size_t i = 0; i < add; i++) {
+                if(cursor_ != end()) {
+                  cursor_ = cursor_->getNext();
+                }
+              }
+              return *this;
 						}
 						/**
 						 * SubtractionAssignment operator
@@ -236,14 +236,12 @@ namespace CPSC131
 						 */
 						Iterator operator -=(size_t add)
 						{
-              // cursor_ = std::prev(cursor_, add);
-              // return *this;
-              // auto itr = std::prev(this, add);
-              // return *itr;
-
-              // Iterator temp(*this);
-              // for(size_t i = 0; i > add; i--) {operator--();}
-              // return temp;
+            for(size_t i = 0; i > add; i--) {
+                  if(cursor_ != begin()) {
+                    cursor_ = cursor_->getPrev();
+                  }
+                }
+                return *this;
 						}
 
 						/**
@@ -251,26 +249,12 @@ namespace CPSC131
 						 */
 						Iterator operator +=(int add)
 						{
-              // if(add < 0){
-              // auto itr = std::prev(this, add);
-              // return *itr;
-              // }
-              // auto itr = std::next(this, add);
-              // return *itr;
-
-              // if(add < 0){
-              // cursor_ = std::prev(cursor_, add);
-              // return *this;
-              // }
-              // cursor_ = std::next(cursor_, add);
-              // return *this;
-
-              // if(add < 0){
-              // operator-=(add);
-              // return *this;
-              // }
-              // operator+=(add);
-              // return *this;
+            for(int i = 0; i < add; i++) {
+                if(cursor_ != end()) {
+                  cursor_ = cursor_->getNext();
+                }
+              }
+              return *this;
 						}
 
 						/**
@@ -278,19 +262,16 @@ namespace CPSC131
 						 */
 						Iterator operator -=(int subtract)
 						{
-              // if(subtract < 0){
-              // auto itr = std::next(this, subtract);
-              // return *itr;
-              // }
-              // auto itr = std::prev(this, subtract);
-              // return *itr;
+            if(subtract > 0) {
+              subtract = subtract*(-1);
+            }
 
-              // if(subtract < 0){
-              // cursor_ = std::next(cursor_, subtract);
-              // return *this;
-              // }
-              // cursor_ = std::prev(cursor_, subtract);
-              // return *this;
+            for(int i = 0; i > subtract; i--) {
+                  if(cursor_ != begin()) {
+                    cursor_ = cursor_->getPrev();
+                  }
+                }
+                return *this;
 						}
 
 						/**
