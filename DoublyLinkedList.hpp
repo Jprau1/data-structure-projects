@@ -440,32 +440,32 @@ namespace CPSC131
 				 */
 				Iterator insert_after(Iterator pos, const T& value)
 				{
-          Node<T>* newNode = new Node<T>;
-          newNode->setElement(value);
-          if(empty()) {head_ = tail_ = newNode;}
+          Node<T>* Node_ = new Node<T>;
+          Node_->setElement(value);
+          if(empty()) {head_ = tail_ = Node_;}
 
           else if(pos.getCursor() == head_) {
-            if(head_->getNext() != nullptr) {head_->getNext()->setPrev(newNode);}
-            newNode->setNext(head_->getNext());
-            head_->setNext(newNode);
-            newNode->setPrev(head_);
-            head_ = newNode;
+            if(head_->getNext() != nullptr) {head_->getNext()->setPrev(Node_);}
+            Node_->setNext(head_->getNext());
+            head_->setNext(Node_);
+            Node_->setPrev(head_);
+            head_ = Node_;
           }
 
           else if(pos.getCursor() == nullptr) {
-            tail_->setNext(newNode);
-            newNode->setPrev(tail_);
-            tail_ = newNode;
+            tail_->setNext(Node_);
+            Node_->setPrev(tail_);
+            tail_ = Node_;
           }
 
           else {
-            newNode->setNext(pos.getCursor()->getNext());
-            pos.getCursor()->getNext()->setPrev(newNode);
-            pos.getCursor()->setNext(newNode);
-            newNode->setPrev(pos.getCursor());
+            Node_->setNext(pos.getCursor()->getNext());
+            pos.getCursor()->getNext()->setPrev(Node_);
+            pos.getCursor()->setNext(Node_);
+            Node_->setPrev(pos.getCursor());
           }
           ++size_;
-          return Iterator(nullptr, nullptr, newNode);
+          return Iterator(nullptr, nullptr, Node_);
 				}
 
 				/**
@@ -481,9 +481,7 @@ namespace CPSC131
 				Iterator insert_after(size_t pos, const T& value)
 				{
           auto itr = begin();
-          // itr += pos;
           for(size_t i = 0; i < pos; itr++, i++ ){}
-
           return insert_after(itr, value);
 				}
 
@@ -498,15 +496,12 @@ namespace CPSC131
 				 */
 				Iterator erase(Iterator pos)
 				{
-          if(pos.getCursor() == nullptr) throw std::range_error("iterator does not point to a valid node");
+          if(pos.getCursor() == nullptr) throw std::range_error("ERROR: iterator does not point to a valid node");
 
-          if(pos.getCursor() == head_){
+          if(pos.getCursor() == head_) {
             if(pos.getCursor() == tail_) {
               head_ = tail_ = nullptr;
-              //delete pos.getCursor();
-              //return this->end();
-            }
-            else {
+            } else {
               head_ = head_->getNext();
               head_->setPrev(nullptr);
             }
@@ -515,15 +510,12 @@ namespace CPSC131
           else if(pos.getCursor() == tail_) {
             tail_ = tail_->getPrev();
             tail_->setNext(nullptr);
-          }
-          else {
+          } else {
             pos.getCursor()->getNext()->setPrev(pos.getCursor()->getPrev());
             pos.getCursor()->getPrev()->setNext(pos.getCursor()->getNext());
           }
             --size_;
-            Iterator returnNode(nullptr, nullptr, pos.getCursor()->getNext());
-            //delete pos.getCursor();
-            return returnNode;
+            return Iterator(nullptr, nullptr, pos.getCursor()->getNext());
 				}
 
 				/**
@@ -533,15 +525,14 @@ namespace CPSC131
 				 */
 				Iterator push_after(Iterator pos, const T& value)
 				{
-          Node<T>* newNode = new Node<T>;
-          // if(empty()) {head_ = tail_ = newNode;}
-          newNode->setElement(value);
-          newNode->setNext(pos.getCursor()->getNext());
-          pos.getCursor()->getNext()->setPrev(newNode);
-          pos.getCursor()->setNext(newNode);
-          newNode->setPrev(pos.getCursor());
+          Node<T>* Node_ = new Node<T>;
+          Node_->setElement(value);
+          Node_->setNext(pos.getCursor()->getNext());
+          pos.getCursor()->getNext()->setPrev(Node_);
+          pos.getCursor()->setNext(Node_);
+          Node_->setPrev(pos.getCursor());
           ++size_;
-          return Iterator(nullptr, nullptr, newNode);
+          return Iterator(nullptr, nullptr, Node_);
 				}
 
 				/**
@@ -549,12 +540,12 @@ namespace CPSC131
 				 */
 				void push_front(const T& value)
 				{
-          Node<T>* newNode = new Node<T>;
-          if(empty()) {head_ = tail_ = newNode;}
-          newNode->setElement(value);
-          newNode->setNext(head_);
-          newNode->setPrev(newNode);
-          head_ = newNode;
+          Node<T>* Node_ = new Node<T>;
+          if(empty()) {head_ = tail_ = Node_;}
+          Node_->setElement(value);
+          Node_->setNext(head_);
+          Node_->setPrev(Node_);
+          head_ = Node_;
           ++size_;
 				}
 
@@ -565,14 +556,14 @@ namespace CPSC131
 				 */
 				Iterator push_back(const T& value)
 				{
-          Node<T>* newNode = new Node<T>;
-          if(empty()) {head_ = tail_ = newNode;}
-          newNode->setElement(value);
-          newNode->setPrev(tail_);
-          tail_->setNext(newNode);
-          tail_ = newNode;
+          Node<T>* Node_ = new Node<T>;
+          if(empty()) {head_ = tail_ = Node_;}
+          Node_->setElement(value);
+          Node_->setPrev(tail_);
+          tail_->setNext(Node_);
+          tail_ = Node_;
           ++size_;
-          return Iterator(nullptr, nullptr, newNode);
+          return Iterator(nullptr, nullptr, Node_);
 				}
 
 				/**
@@ -582,7 +573,7 @@ namespace CPSC131
 				 */
 				void pop_front()
 				{
-          if(empty()) throw std::length_error("empty list");
+          if(empty()) throw std::length_error("ERROR: empty list");
           erase(begin());
 				}
 
@@ -593,7 +584,7 @@ namespace CPSC131
 				 */
 				T& front()
 				{
-          if(empty() == true) throw std::length_error("empty list");
+          if(empty() == true) throw std::length_error("ERROR: empty list");
           return head_->getElement();
 				}
 
@@ -604,7 +595,7 @@ namespace CPSC131
 				 */
 				T& back()
 				{
-          if(empty() == true) throw std::length_error("empty list");
+          if(empty() == true) throw std::length_error("ERROR: empty list");
           return tail_->getElement();
 				}
 
@@ -620,10 +611,7 @@ namespace CPSC131
           }
 
           auto itr = begin();
-          // itr += index;
-
           for(size_t i = 0; i < index; itr++, i++ ){}
-
           return *itr;
 				}
 
