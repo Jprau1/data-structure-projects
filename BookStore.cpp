@@ -63,10 +63,10 @@ namespace CPSC131::BookStore
 	 */
 	bool BookStore::bookExists(std::string isbn)
 	{
-    // for(auto itr = bookList.begin(); itr != bookList.end(); itr++) {
-    //   if((*itr).getIsbn() == isbn) {return true;}
-    // }
-    // return false;
+    for(auto itr = bookList.begin(); itr != bookList.end(); itr++) {
+      if((*itr).getIsbn() == isbn) {return true;}
+    }
+    return false;
 	}
 
 	/**
@@ -107,7 +107,7 @@ namespace CPSC131::BookStore
 	 */
 	void BookStore::purchaseInventory(const Book& book)
 	{
-
+    adjustAccountBalance((-1)*(book.getPriceCents() * book.getStockAvailable()));
 	}
 
 	/**
@@ -125,7 +125,8 @@ namespace CPSC131::BookStore
 		size_t unit_count
 	)
 	{
-
+    Book(title,author,isbn,price_cents,unit_count);
+    adjustAccountBalance(price_cents * unit_count);
 	}
 
 	/**
@@ -141,11 +142,11 @@ namespace CPSC131::BookStore
 	 */
 	void BookStore::printInventory()
 	{
-    // cout << "*** Book Store Inventory ***" << endl;
-    // for(auto itr = bookList.begin(); itr != bookList.end(); itr++) {
-    //   cout << '"' << (*itr).getTitle() << '"' << ", by " << (*itr).getAuthor() << ' '
-    //   << (*itr).getIsbn() << '(' << (*itr).getStockAvailable() << " in stock)" << endl;
-    //   }
+    cout << "*** Book Store Inventory ***" << endl;
+    for(auto itr = bookList.begin(); itr != bookList.end(); itr++) {
+      cout << '"' << (*itr).getTitle() << '"' << ", by " << (*itr).getAuthor() << ' '
+      << (*itr).getIsbn() << '(' << (*itr).getStockAvailable() << " in stock)" << endl;
+      }
 	}
 
 	/**
@@ -175,6 +176,10 @@ namespace CPSC131::BookStore
 	 */
 	void BookStore::sellToCustomer(Book& book, size_t price_cents, size_t quantity)
 	{
+    if(book.getStockAvailable() < quantity) { throw std::range_error("Error: not enough books in stock"); }
+
+    book.adjustStockAvailable((-1) * quantity);
+    adjustAccountBalance(price_cents * quantity);
 
 	}
 }
