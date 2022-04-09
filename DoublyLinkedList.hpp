@@ -506,14 +506,6 @@ namespace CPSC131
               head_->setPrev(nullptr);
             }
           }
-
-          else if(pos.getCursor() == tail_) {
-            tail_ = tail_->getPrev();
-            tail_->setNext(nullptr);
-          } else {
-            pos.getCursor()->getNext()->setPrev(pos.getCursor()->getPrev());
-            pos.getCursor()->getPrev()->setNext(pos.getCursor()->getNext());
-          }
             --size_;
             return Iterator(nullptr, nullptr, pos.getCursor()->getNext());
 				}

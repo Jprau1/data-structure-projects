@@ -76,10 +76,10 @@ namespace CPSC131::BookStore
 	 */
 	size_t BookStore::getBookStockAvailable(std::string isbn)
 	{
-    // for(auto itr = bookList.begin(); itr != bookList.end(); itr++) {
-    //   if((*itr).getIsbn() == isbn) {return (*itr).getStockAvailable();}
-    // }
-    // return 0;
+    for(auto itr = bookList.begin(); itr != bookList.end(); itr++) {
+      if((*itr).getIsbn() == isbn) {return (*itr).getStockAvailable();}
+    }
+    return 0;
 	}
 
 	/**
@@ -146,7 +146,7 @@ namespace CPSC131::BookStore
     for(auto itr = bookList.begin(); itr != bookList.end(); itr++) {
       cout << '"' << (*itr).getTitle() << '"' << ", by " << (*itr).getAuthor() << ' '
       << (*itr).getIsbn() << '(' << (*itr).getStockAvailable() << " in stock)" << endl;
-      }
+    }
 	}
 
 	/**
@@ -161,7 +161,7 @@ namespace CPSC131::BookStore
 	 */
 	void BookStore::sellToCustomer(std::string isbn, size_t price_cents, size_t quantity)
 	{
-
+    sellToCustomer(getBook(isbn), price_cents, quantity);
 	}
 
 	/**
