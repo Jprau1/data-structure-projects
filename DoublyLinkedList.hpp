@@ -189,10 +189,9 @@ namespace CPSC131
 						 */
 						Iterator operator++(int)
 						{
-              Iterator temp( *this );
-              // operator++();
+              Iterator inc( *this );
               cursor_ = cursor_->getNext();
-              return temp;
+              return inc;
 						}
 
 						/**
@@ -203,7 +202,6 @@ namespace CPSC131
 						{
               cursor_ = cursor_->getPrev();
               return *this;
-
 						}
 
 						/**
@@ -212,9 +210,9 @@ namespace CPSC131
 						 */
 						Iterator operator--(int)
 						{
-              Iterator temp( *this );
+              Iterator dec( *this );
               cursor_ = cursor_->getPrev();
-              return temp;
+              return dec;
 						}
 
 						/**
