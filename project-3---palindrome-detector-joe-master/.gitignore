@@ -1,0 +1,9 @@
+
+*.o
+*~
+
+main
+main-sandbox
+main-tests
+
+results.json
