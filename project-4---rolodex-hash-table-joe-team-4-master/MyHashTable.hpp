@@ -64,11 +64,11 @@ namespace CPSC131::MyHashTable
 			 */
 			~MyHashTable()
 			{
-        if(table_ != nullptr)
-        {
-          delete [] table_;
-          table_ = nullptr;
-        }
+        // if(table_ != nullptr)
+        // {
+        //   clear();
+        //   table_ = nullptr;
+        // }
 			}
 
 			/**
@@ -132,16 +132,18 @@ namespace CPSC131::MyHashTable
 			 */
 			void setCapacity(size_t c)
 			{
-        auto temp = this;
+        auto temp = table_;
+        size_t tempCap = capacity_;
         this->table_ = new std::forward_list<std::pair<std::string, VTYPE>>[c];
-        for(size_t i = 0; i < temp->capacity(); i++)
+        for(size_t i = 0; i < tempCap; i++)
         {
-          for(auto itr = temp->table_[i].begin(); itr != temp->table_[i].end(); itr++)
+          for(auto itr = temp[i].begin(); itr != temp[i].end(); itr++)
           {
             this->add((*itr).first, (*itr).second);
           }
         }
-        // delete [] temp;
+        capacity_ = c;
+        delete [] temp;
 			}
 
 			///	Your welcome
@@ -164,13 +166,13 @@ namespace CPSC131::MyHashTable
           sum *= temp;
           if (sum > ULLONG_WRAP_AT) { sum %= ULLONG_WRAP_AT; }
         }
-
         sum *= sum;
+
         std::string temp = std::to_string(sum);
 
-        std::string hashCode = temp.substr(temp.length()/4, temp.length()/2);
-        auto hash = std::stoull(hashCode, nullptr, 10);
-        return hash;
+        std::string hashCode = temp.substr(temp.length()/4, temp.length()/2);   // shrink the hash code
+        auto hash = std::stoull(hashCode, nullptr, 10);                         // turn ull to string
+        return hash;                                                            // std::invalid_argument
 			}
 
 			/**
@@ -200,13 +202,13 @@ namespace CPSC131::MyHashTable
 			 */
 			bool exists(std::string key) const
 			{
-        // auto hashKey = hash(key);
-        // size_t index = (size_t)hashKey % capacity_;
-        // for(auto itr = table_[index].begin(); itr != table_[index].end(); itr++)
-        // {
-        //   if((*itr).first == std::to_string(hashKey)) { return true; }
-        // }
-        // return false;
+        auto hashKey = hash(key);                                                 // hash code
+        size_t index = (size_t)hashKey % capacity_;                               // hash code used for index
+        for(auto itr = table_[index].begin(); itr != table_[index].end(); itr++)
+        {
+          if((*itr).first == std::to_string(hashKey)) { return true; }            // if keys match, return true
+        }
+        return false;
 			}
 
 			/**
@@ -215,11 +217,11 @@ namespace CPSC131::MyHashTable
 			 */
 			void add(std::string key, VTYPE value)
 			{
-        if(exists(key)) { throw std::runtime_error("ERROR: key already exists"); }
+        // if(exists(key)) { throw std::runtime_error("ERROR: key already exists"); }  // error
 
         auto hashKey = hash(key);
-        size_t index = (size_t)hashKey % capacity_;
-        auto strHashKey = std::to_string(hashKey);
+        size_t index = (size_t)hashKey % capacity_;                               // hash code used for index
+        auto strHashKey = std::to_string(hashKey);                                // hash code to string for pair
         auto pair = std::make_pair(strHashKey, value);
         table_[index].push_front(pair);
         size_++;
@@ -231,10 +233,10 @@ namespace CPSC131::MyHashTable
 			 */
 			VTYPE& get(std::string key) const
 			{
-        // if(exists(key) == false) { throw std::runtime_error("ERROR: pair does not exist"); }
-        // auto hashKey = hash(key);
-        // size_t index = (size_t)hashKey % capacity_;
-        // return table_[index].front().second;
+        if(exists(key) == false) { throw std::runtime_error("ERROR: pair does not exist"); }
+        auto hashKey = hash(key);
+        size_t index = (size_t)hashKey % capacity_;
+        return table_[index].front().second;
 			}
 
 			/**
@@ -246,9 +248,8 @@ namespace CPSC131::MyHashTable
         // if(exists(key) == false) { throw std::runtime_error("ERROR: key does not exist"); }
         // auto hashKey = hash(key);
         // size_t index = (size_t)hashKey % capacity_;
-        // table_[index].pop_front();
+        // table_[index].erase_after();
         // size_--;
-
 			}
 
 			/**
@@ -257,11 +258,11 @@ namespace CPSC131::MyHashTable
 			 */
 			void clear()
 			{
-        // for(size_t i = 0; i < capacity_; i++)
-        // {
-        //   table_[i].clear();
-        // }
-        // size_ = 0;
+        for(size_t i = 0; i < capacity_; i++)
+        {
+          table_[i].clear();
+        }
+        size_ = 0;
 			}
 
 			/**
