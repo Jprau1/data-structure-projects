@@ -64,11 +64,11 @@ namespace CPSC131::MyHashTable
 			 */
 			~MyHashTable()
 			{
-        // if(table_ != nullptr)
-        // {
-        //   clear();
-        //   table_ = nullptr;
-        // }
+        if(table_ != nullptr)
+        {
+          clear();
+          table_ = nullptr;
+        }
 			}
 
 			/**
@@ -162,17 +162,17 @@ namespace CPSC131::MyHashTable
 
         for(unsigned long int i = 0; i < key.length(); i++)
         {
-          auto temp = (unsigned long long int)key[i];
+          unsigned long long int temp = (unsigned long long int)key[i];
           sum *= temp;
-          if (sum > ULLONG_WRAP_AT) { sum %= ULLONG_WRAP_AT; }
+          sum %= ULLONG_WRAP_AT;
         }
         sum *= sum;
 
         std::string temp = std::to_string(sum);
 
         std::string hashCode = temp.substr(temp.length()/4, temp.length()/2);   // shrink the hash code
-        auto hash = std::stoull(hashCode, nullptr, 10);                         // turn ull to string
-        return hash;                                                            // std::invalid_argument
+        unsigned long long int hash = std::stoull(hashCode, nullptr, 10);       // turn string to ull
+        return hash;                                                            // std::invalid_argument when base is 10
 			}
 
 			/**
@@ -243,12 +243,17 @@ namespace CPSC131::MyHashTable
 			 * Remove a key/value pair that corresponds to the provided key.
 			 * If no such key exists, throw a runtime_error.
 			 */
-			void remove(std::string key)
+			void remove(std::string key) // if we're trying to erase a specific key/value pair, why are we only given the key?
 			{
         // if(exists(key) == false) { throw std::runtime_error("ERROR: key does not exist"); }
         // auto hashKey = hash(key);
         // size_t index = (size_t)hashKey % capacity_;
-        // table_[index].erase_after();
+        // for(auto itr = table_[index].before_begin(); itr != table_[index].end(); itr++)
+        // {
+        //   auto temp = itr;
+        //   temp++;
+        //   if() { table_[index].erase_after(); }
+        // }
         // size_--;
 			}
 
