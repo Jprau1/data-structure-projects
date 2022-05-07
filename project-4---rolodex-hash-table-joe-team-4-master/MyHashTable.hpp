@@ -132,18 +132,22 @@ namespace CPSC131::MyHashTable
 			 */
 			void setCapacity(size_t c)
 			{
-        auto temp = table_;
-        size_t tempCap = capacity_;
-        this->table_ = new std::forward_list<std::pair<std::string, VTYPE>>[c];
-        for(size_t i = 0; i < tempCap; i++)
+        std::forward_list<std::pair<std::string, VTYPE>> * temp = table_;         // create a temp hash table and assign it the old
+        size_t tempCap = capacity_;                                               // copy the old capacity to temp
+        this->table_ = new std::forward_list<std::pair<std::string, VTYPE>>[c];   // create new hash table
+        this->capacity_ = c;                                                      // change capacity of new hash table
+        this->n_collisions_ = 0;
+        if(temp != nullptr)                                                       // check if the old table is null before iterating
         {
-          for(auto itr = temp[i].begin(); itr != temp[i].end(); itr++)
+          for(size_t i = 0; i < tempCap; i++)                                     // iterate throw every row
           {
-            this->add((*itr).first, (*itr).second);
+            for(auto itr = temp[i].begin(); itr != temp[i].end(); itr++)          // in each row, iterate through forward list
+            {
+              this->add((*itr).first, (*itr).second);                             // add pair elements into new table from temp table
+            }
           }
         }
-        capacity_ = c;
-        delete [] temp;
+        delete [] temp;                                                           // delete the temp hash table
 			}
 
 			///	Your welcome
@@ -172,7 +176,7 @@ namespace CPSC131::MyHashTable
 
         std::string hashCode = temp.substr(temp.length()/4, temp.length()/2);   // shrink the hash code
         unsigned long long int hash = std::stoull(hashCode, nullptr, 10);       // turn string to ull
-        return hash;                                                            // std::invalid_argument when base is 10
+        return hash;
 			}
 
 			/**
@@ -202,11 +206,11 @@ namespace CPSC131::MyHashTable
 			 */
 			bool exists(std::string key) const
 			{
-        auto hashKey = hash(key);                                                 // hash code
+        unsigned long long int hashKey = hash(key);                               // hash code
         size_t index = (size_t)hashKey % capacity_;                               // hash code used for index
         for(auto itr = table_[index].begin(); itr != table_[index].end(); itr++)
         {
-          if((*itr).first == std::to_string(hashKey)) { return true; }            // if keys match, return true
+          if((*itr).first == std::to_string(hashKey)) { return true; }            // if key inside pair matches, return true
         }
         return false;
 			}
@@ -217,12 +221,17 @@ namespace CPSC131::MyHashTable
 			 */
 			void add(std::string key, VTYPE value)
 			{
-        // if(exists(key)) { throw std::runtime_error("ERROR: key already exists"); }  // error
+        // if(exists(key)) { throw std::runtime_error("ERROR: key already exists"); }  // throws error
 
-        auto hashKey = hash(key);
+        unsigned long long int hashKey = hash(key);
         size_t index = (size_t)hashKey % capacity_;                               // hash code used for index
-        auto strHashKey = std::to_string(hashKey);                                // hash code to string for pair
-        auto pair = std::make_pair(strHashKey, value);
+        if(exists(key))
+        {
+          ++n_collisions_;
+          ++hashKey;
+        }
+        std::string strHashKey = std::to_string(hashKey);                         // hash code to string for pair
+        std::pair pair = std::make_pair(strHashKey, value);
         table_[index].push_front(pair);
         size_++;
 			}
@@ -234,7 +243,8 @@ namespace CPSC131::MyHashTable
 			VTYPE& get(std::string key) const
 			{
         if(exists(key) == false) { throw std::runtime_error("ERROR: pair does not exist"); }
-        auto hashKey = hash(key);
+
+        unsigned long long int hashKey = hash(key);
         size_t index = (size_t)hashKey % capacity_;
         return table_[index].front().second;
 			}
@@ -243,17 +253,21 @@ namespace CPSC131::MyHashTable
 			 * Remove a key/value pair that corresponds to the provided key.
 			 * If no such key exists, throw a runtime_error.
 			 */
-			void remove(std::string key) // if we're trying to erase a specific key/value pair, why are we only given the key?
+			void remove(std::string key)
 			{
-        // if(exists(key) == false) { throw std::runtime_error("ERROR: key does not exist"); }
+        if(exists(key) == false) { throw std::runtime_error("ERROR: key does not exist"); }
+
         // auto hashKey = hash(key);
         // size_t index = (size_t)hashKey % capacity_;
-        // for(auto itr = table_[index].before_begin(); itr != table_[index].end(); itr++)
+
+        // auto itr = table_[index].before_begin();
+        // auto temp = itr;
+        // for(; itr != table_[index].end(); itr++)
         // {
-        //   auto temp = itr;
-        //   temp++;
-        //   if() { table_[index].erase_after(); }
+        //   if(temp->first == key) { table_[index].erase_after(itr); }
+        //   // if(++temp != table_[index].end()) { ++temp; }
         // }
+        // // n_collisions_--;
         // size_--;
 			}
 
@@ -275,13 +289,13 @@ namespace CPSC131::MyHashTable
 			 */
 			MyHashTable<VTYPE>& operator=(const MyHashTable<VTYPE>& other)
 			{
-				  if(this != &other) {
-          size_ = other.size_;
-          capacity_ = other.capacity_;
-          n_collisions_ = other.n_collisions_;
-          table_ = other.table_;
-          }
-          return *this;
+        if(this != &other) {
+        size_ = other.size_;
+        capacity_ = other.capacity_;
+        n_collisions_ = other.n_collisions_;
+        table_ = other.table_;
+        }
+        return *this;
 			}
 
 		//
