@@ -176,6 +176,7 @@ namespace CPSC131::MyHashTable
 
         std::string hashCode = temp.substr(temp.length()/4, temp.length()/2);   // shrink the hash code
         unsigned long long int hash = std::stoull(hashCode, nullptr, 10);       // turn string to ull
+        hash %= capacity_;
         return hash;
 			}
 
