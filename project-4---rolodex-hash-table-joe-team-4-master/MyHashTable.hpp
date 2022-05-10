@@ -207,11 +207,11 @@ namespace CPSC131::MyHashTable
 			 */
 			bool exists(std::string key) const
 			{
-        unsigned long long int hashKey = hash(key);                               // hash code
-        size_t index = (size_t)hashKey % capacity_;                               // hash code used for index
-        for(auto itr = table_[index].begin(); itr != table_[index].end(); itr++)
+        unsigned long long int hashKey = hash(key);
+        for(auto itr = table_[hashKey].begin(); itr != table_[hashKey].end(); itr++)
         {
-          if((*itr).first == std::to_string(hashKey)) { return true; }            // if key inside pair matches, return true
+          if((*itr).first == key) { return true; }
+          continue;
         }
         return false;
 			}
@@ -222,18 +222,18 @@ namespace CPSC131::MyHashTable
 			 */
 			void add(std::string key, VTYPE value)
 			{
-        // if(exists(key)) { throw std::runtime_error("ERROR: key already exists"); }  // throws error
+        if(exists(key)) { throw std::runtime_error("ERROR: key already exists"); }  // throws error
+
+        // if(exists(key) == true)
+        // {
+        //   ++n_collisions_;
+        //   // ++hashKey;
+        // }
 
         unsigned long long int hashKey = hash(key);
-        size_t index = (size_t)hashKey % capacity_;                               // hash code used for index
-        if(exists(key))
-        {
-          ++n_collisions_;
-          ++hashKey;
-        }
-        std::string strHashKey = std::to_string(hashKey);                         // hash code to string for pair
-        std::pair pair = std::make_pair(strHashKey, value);
-        table_[index].push_front(pair);
+        if(table_[hashKey].empty() != true) { ++n_collisions_; }                     // fails complexity test
+        std::pair<std::string, VTYPE> pair = std::make_pair(key, value);
+        table_[hashKey].push_front(pair);
         size_++;
 			}
 
@@ -246,8 +246,7 @@ namespace CPSC131::MyHashTable
         if(exists(key) == false) { throw std::runtime_error("ERROR: pair does not exist"); }
 
         unsigned long long int hashKey = hash(key);
-        size_t index = (size_t)hashKey % capacity_;
-        return table_[index].front().second;
+        return table_[hashKey].front().second;
 			}
 
 			/**
@@ -258,18 +257,19 @@ namespace CPSC131::MyHashTable
 			{
         if(exists(key) == false) { throw std::runtime_error("ERROR: key does not exist"); }
 
-        // auto hashKey = hash(key);
-        // size_t index = (size_t)hashKey % capacity_;
-
-        // auto itr = table_[index].before_begin();
-        // auto temp = itr;
-        // for(; itr != table_[index].end(); itr++)
-        // {
-        //   if(temp->first == key) { table_[index].erase_after(itr); }
-        //   // if(++temp != table_[index].end()) { ++temp; }
-        // }
-        // // n_collisions_--;
-        // size_--;
+        auto hashKey = hash(key);
+        auto itr = table_[hashKey].before_begin();
+        auto temp = ++itr;
+        for(; temp != table_[hashKey].end(); itr++, temp++)
+        {
+          if((*temp).first == key)
+          {
+            // table_[hashKey].erase_after(itr);
+            break;
+          }
+        }
+        // if((*temp).first != key) { n_collisions_--; }
+        size_--;
 			}
 
 			/**
