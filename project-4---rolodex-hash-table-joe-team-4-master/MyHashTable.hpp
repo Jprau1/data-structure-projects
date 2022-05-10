@@ -224,14 +224,8 @@ namespace CPSC131::MyHashTable
 			{
         if(exists(key)) { throw std::runtime_error("ERROR: key already exists"); }  // throws error
 
-        // if(exists(key) == true)
-        // {
-        //   ++n_collisions_;
-        //   // ++hashKey;
-        // }
-
         unsigned long long int hashKey = hash(key);
-        if(table_[hashKey].empty() != true) { ++n_collisions_; }                     // fails complexity test
+        if(table_[hashKey].empty() != true) { ++n_collisions_; }                    // fails complexity test
         std::pair<std::string, VTYPE> pair = std::make_pair(key, value);
         table_[hashKey].push_front(pair);
         size_++;
@@ -257,18 +251,17 @@ namespace CPSC131::MyHashTable
 			{
         if(exists(key) == false) { throw std::runtime_error("ERROR: key does not exist"); }
 
-        auto hashKey = hash(key);
+        unsigned long long int hashKey = hash(key);
         auto itr = table_[hashKey].before_begin();
-        auto temp = ++itr;
+        auto temp = table_[hashKey].begin();
         for(; temp != table_[hashKey].end(); itr++, temp++)
         {
           if((*temp).first == key)
           {
-            // table_[hashKey].erase_after(itr);
+            table_[hashKey].erase_after(itr);
             break;
           }
         }
-        // if((*temp).first != key) { n_collisions_--; }
         size_--;
 			}
 
