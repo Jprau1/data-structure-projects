@@ -19,24 +19,32 @@ namespace CPSC131::MyRolodex
 {
 	/// Your welcome
 	MyRolodex::MyRolodex() {}
-	
+
 	/**
 	 * Return true if a person exists in the Rolodex
 	 */
 	bool MyRolodex::exists(std::string name) const
 	{
-		return false;
+		return table_.exists(name);
 	}
-	
+
 	/**
 	 * Allow the user to add an address using its parts.
 	 * This should probably just call on the other overload
 	 */
 	void MyRolodex::add(std::string name, std::string line1, std::string line2, std::string city, std::string state, int zip, std::string country)
 	{
-		
+    Address address;
+    address.line1 = line1;
+    address.line2 = line2;
+    address.city = city;
+    address.state = state;
+    address.zip = zip;
+    address.country = country;
+
+    table_.add(name, address);
 	}
-	
+
 	/**
 	 * Add an entry into the Rolodex
 	 * The person's name is the key, and their Address is the value.
@@ -44,9 +52,9 @@ namespace CPSC131::MyRolodex
 	 */
 	void MyRolodex::add(std::string name, Address address)
 	{
-		
+    table_.add(name, address);
 	}
-	
+
 	/**
 	 * Return an address structure associated with a person
 	 */
@@ -54,59 +62,37 @@ namespace CPSC131::MyRolodex
 	{
 		return Address();
 	}
-	
+
 	/**
 	 * Remove a person from the Rolodex
 	 */
 	void MyRolodex::remove(std::string name)
 	{
-		
+    table_.remove(name);
 	}
-	
+
 	/**
 	 * Clear the Rolodex of all information.
 	 * (Hint: The table also has this method)
 	 */
 	void MyRolodex::clear()
 	{
-		
+    table_.clear();
 	}
-	
+
 	/**
 	 * Return true if the Rolodex is empty, false otherwise
 	 */
 	bool MyRolodex::empty()
 	{
-		return false;
+		return table_.empty();
 	}
-	
+
 	/**
 	 * Return the number of entries in this Rolodex
 	 */
 	size_t MyRolodex::size()
 	{
-		return 0;
+		return table_.size();
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

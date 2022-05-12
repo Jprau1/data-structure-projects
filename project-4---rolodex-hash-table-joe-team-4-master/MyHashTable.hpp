@@ -253,8 +253,7 @@ namespace CPSC131::MyHashTable
 
         unsigned long long int hashKey = hash(key);
         auto itr = table_[hashKey].before_begin();
-        auto temp = table_[hashKey].begin();
-        for(; temp != table_[hashKey].end(); itr++, temp++)
+        for(auto temp = table_[hashKey].begin(); temp != table_[hashKey].end(); itr++, temp++)
         {
           if((*temp).first == key)
           {
