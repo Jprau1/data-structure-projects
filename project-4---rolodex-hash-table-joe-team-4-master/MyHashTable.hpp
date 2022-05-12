@@ -187,11 +187,32 @@ namespace CPSC131::MyHashTable
 			 */
 			unsigned long long int myCustomHashFunction1(std::string key) const
 			{
-				return 0;
+				unsigned long long int sum = 1;
+
+        for(unsigned long int i = 0; i < key.length(); i++)
+        {
+          unsigned long long int temp = (unsigned long long int)key[i];
+          unsigned long long int loop = ((temp % 7) + 1);
+          while( loop > 0 )
+          {
+            sum = (sum * temp * 5381) / 23;
+            sum = sum * key.length() * 97;
+            loop--;
+          }
+          sum %= ULLONG_WRAP_AT;
+        }
+        sum = sum * 31;
+
+        std::string temp = std::to_string(sum);
+
+        std::string hashCode = temp.substr(temp.length()/4, temp.length()/2);
+        unsigned long long int hash = std::stoull(hashCode, nullptr, 10);
+        hash %= capacity_;
+        return hash;
 			}
 			unsigned long long int myCustomHashFunction2(std::string key) const
 			{
-				return 0;
+        return 0;
 			}
 			unsigned long long int myCustomHashFunction3(std::string key) const
 			{
